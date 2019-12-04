@@ -1,0 +1,33 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="fall2018.csc207_project">
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name="fall2018.csc207_project.UI.GlobalActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="fall2018.csc207_project.UI.SignInActivity"></activity>
+        <activity android:name="fall2018.csc207_project.UI.SignUpActivity"></activity>
+        <activity android:name="fall2018.csc207_project.UI.LocalCenterActivity"></activity>
+        <activity android:name="fall2018.csc207_project.UI.AddDeleteGameActivity"></activity>
+        <activity android:name="fall2018.csc207_project.UI.LoadOrSaveGameActivity"></activity>
+        <activity android:name="fall2018.csc207_project.UI.StartingActivity"></activity>
+        <activity android:name="fall2018.csc207_project.SlidingTileGame.ComplexityActivity"></activity>
+        <activity android:name="fall2018.csc207_project.SlidingTileGame.GameActivity"></activity>
+        <activity android:name="fall2018.csc207_project.game2048.GameActivity"></activity>
+        <activity android:name="fall2018.csc207_project.UI.ScoreBoardActivity"></activity>
+        <activity android:name="fall2018.csc207_project.MineSweeper.GameActivity"></activity>
+        <activity android:name="fall2018.csc207_project.MineSweeper.GameComplexityActivity"></activity>
+        <activity android:name="fall2018.csc207_project.MineSweeper.SplashActivity"></activity>
+    </application>
+
+</manifest>

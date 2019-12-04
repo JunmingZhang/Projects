@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/black"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:clipChildren="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:gravity="center"
+            android:text = "@string/minesweeper_time"
+            android:textStyle="bold"
+            android:textColor="@color/green"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text = "@string/time"
+            android:textStyle="bold"
+            android:textColor="@color/red"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:gravity="center"
+            android:text = "@string/minesweeper_flag"
+            android:textColor="@color/green"
+            android:textStyle="bold"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/bomb"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/flag"
+            android:textStyle="bold"
+            android:textColor="@color/red"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp"
+        android:clipChildren="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/help"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:textSize="20sp"
+            android:textColor="@color/blue"
+            android:textStyle="bold"
+            android:text="@string/help" />
+
+        <TextView
+            android:id="@+id/help_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/help_left"
+            android:gravity="center"
+            android:textColor="@color/blue"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+    </LinearLayout>
+
+
+    <fall2018.csc207_project.MineSweeper.BoardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/grid"
+        android:layout_width="445dp"
+        android:layout_height="410dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="60dp"
+        android:background="@color/white">
+
+    </fall2018.csc207_project.MineSweeper.BoardView>
+
+
+</LinearLayout>

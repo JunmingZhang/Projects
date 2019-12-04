@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/Welcome_To_Sweep_Mine_Game"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="59dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:gravity="center"
+        android:text="@string/choose"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/grid10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginTop="50dp"
+        android:textSize="18sp"
+        android:text="@string/_10_BOMBS" />
+
+    <Button
+        android:id="@+id/grid15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grid10"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:textSize="18sp"
+        android:text="@string/_15_BOMBS" />
+
+    <Button
+        android:id="@+id/grid20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grid15"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:textSize="18sp"
+        android:text="@string/_20_BOMBS" />
+
+    <Button
+        android:id="@+id/crazy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grid20"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:textSize="18sp"
+        android:text="@string/crazy" />
+
+    <Button
+        android:id="@+id/lucky"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/crazy"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:textSize="18sp"
+        android:text="@string/lucky" />
+
+
+</RelativeLayout>

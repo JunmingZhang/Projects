@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/signin_username"
+        android:layout_width="245dp"
+        android:layout_height="50sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="35dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/signin_password"
+        android:layout_width="245dp"
+        android:layout_height="50sp"
+        android:layout_below="@+id/signin_username"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="35dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/sign_in_label"
+        android:textStyle="bold"
+        android:layout_width="86dp"
+        android:layout_height="50sp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:text="@string/username"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/sign_up_label"
+        android:layout_width="86dp"
+        android:layout_height="50sp"
+        android:layout_below="@+id/sign_in_label"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:text="@string/password"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/signin_button"
+        android:layout_width="245dp"
+        android:layout_height="50sp"
+        android:layout_below="@+id/signin_password"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="35dp"
+        android:textStyle="bold"
+        android:hint="@string/signin" />
+
+</RelativeLayout>

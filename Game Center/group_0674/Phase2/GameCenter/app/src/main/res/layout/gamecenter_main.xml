@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="127dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="68dp"
+        android:text="@string/gamecenter"
+        android:textSize="45sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/global_signin"
+        android:layout_width="210dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:textStyle="bold"
+        android:text="@string/signin" />
+
+    <Button
+        android:id="@+id/global_signup"
+        android:layout_width="210dp"
+        android:layout_height="65dp"
+        android:layout_below="@+id/global_signin"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="218dp"
+        android:textStyle="bold"
+        android:text="@string/signup" />
+
+</RelativeLayout>
