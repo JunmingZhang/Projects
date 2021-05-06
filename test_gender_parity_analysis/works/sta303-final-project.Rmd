@@ -1,0 +1,534 @@
+---
+title: "Consulting Report of testing gender parity in Black Saber Software"
+subtitle: "Testing Gender parity existence in the processes of hiring, wages, and promotion"
+author: "Report prepared for Black Saber Software by Consulting Expert"
+date: 2021-04-22
+lang: "en"
+output:
+  pdf_document:
+    template: report.tex
+    toc: true
+    toc_depth: 2
+titlepage: true
+titlepage-color: "6C3082"
+titlepage-text-color: "FFFFFF"
+titlepage-rule-color: "FFFFFF"
+titlepage-rule-height: 2
+---
+
+```{r, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(reshape)
+library(lattice)
+# install.packages("DataExplorer")
+library(DataExplorer)
+library(corrplot)
+library(Hmisc)
+library(lme4)
+library(stats)
+library(MuMIn)
+library(lmtest)
+library(pscl)
+# this should supress all code and messages
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, message = FALSE,warnings=FALSE, fig.width = 14, fig.height = 9)
+```
+
+\newpage
+# Executive summary
+
+Dear all members of the Black Saber Software board of director, 
+Thanks for inviting Consulting Experts to participate in this potential gender parity investigation of Black Saber Software. Here, Consulting Expert will promise the legal responsibility for the truth and accuracy of what we say in this summary. And we will promise the legal responsibility of the safety of your provided data of your current employees.    
+As we have been told previously, our investigation will be mainly focusing on testing the fairness of the sections of hiring, salary, and position promotion.
+
+* We found that gender bias appears in salary distributions in Black Saber Software. In the provided data, the salary was calculated non-accumulated. And we decided to make some further manipulation with it and make it related to gender to see if there were some evidence to help us conclude the existence of the gender bias in the salary distribution. Besides, since each individual's salary is highly related to the overall situation will their work teams, we considered increasing the weight of comparing the salary difference within each team more than just reaching the difference between each individual. And after we have done all the testings, we can confidently conclude gender parity in the salary distribution among most of the work teams. Besides, gender bias commonly existed in most positions, from an entry-level position to a high-level management position. Please refer to figure 1 which visualizes this finding.
+
+* We found that gender bias appears in promotion decisions in Black Saber Software. To test if there is gender parity in the promotion process of Black Saber Software, we calculated the service years of every current employee. After we find the years of service for each individual, we make a few steps of analysis. We found that gender is one of the most influential factors among all possible factors that might influence the promotion of employees. 
+
+* We found that the hiring process is gender parity-free. As the email informed, the processes of hiring of Black Saber Software contains three rounds, and the first two rounds are application qualification checks which are highly relied on AI screening; and since the last round of hiring is made of real person interviews which checked by real interviewers, AI does not have any chance to make any decision on the third round of hiring process. In this case, we decided to focus more on the first two rounds of the hiring process, to test if the training AI has any potential selection biases due to the gender difference of job applicants. From our analysis of your provided data in the processes, we can conclude that AI has no gender preference in the first two rounds of the hiring pipeline, and we have no evidence to say that AI has gender biases. The third round of the hiring process is made by interviewers and it is also gender parity free. Figure 2 illustrates the findings in this section.
+
+And in our final statement of this investigation, we will conclude that the hiring process is gender parity-free, but gender bias appears in promotion decisions and salary distributions in Black Saber Software.
+
+![gender's salary compare in 2020 Q4](./salcompare.png)
+
+![gender's status in hiring phases](./statushire.png)
+
+\newpage
+# Technical report
+
+## Introduction
+
+This statistical report is requested by Black Saber Software and provided by Consulting Expert as the result of an investigation of the gender parity issue towards Black Saber Software.
+
+This investigation is mainly focused on the gender issue checks on three main areas of Black Saber Software: hiring pipeline, salary decision, promotion qualification.
+
+All used data were provided and authorized by Black Saber Software, and all the data were collected from the current employees of Black Saber Software. Since the prepared data contains many factors that might influence the conclusion of our investigation, in this case, we took many complicated data manipulation and sorting before modeling and plotting. Besides, only considering the direct relationship between gender and those three processes could be highly biased towards our conclusion, to due with this issue, we also took many other factors inside our considerations. To make a more precise logic flow for this investigation, we made three major testable and measurable hypotheses, and all statistical analyses were made around those three hypotheses.
+
+After all, we have found the evidence to answer the questions that Black Saber Software asked previously. And Consulting Expert has cleaned all the data used in this investigation from our devices with zero backups to keep our data safety promises. All three significant questions and answers of them will be demonstrated in this report detailly.
+
+### Research questions
+The purpose of this survey is to explore factors related to gender in the company Black Saber Softwares. In this company, if gender is involved in the hiring pipeline? If gender is involved in Black Saber Software's salary decision? If gender is involved in position promotion? It is generally believed that the salary of men is higher than that of women in society. Is this true in this company? Because there are many other factors in high, salary and promotion that will affect our judgment, we need to use the existing data to establish a model, so that we can reasonably estimate the gender ratio, so as to draw the final conclusion.
+
+* Based on the salary data of the latest quarter (Q4, 2020), is gender an important factor?
+ 
+* Is gender an influential factor involves in Black Saber Software's position promotion ?
+
+* Based on the hiring data is gender an influential factor?
+
+## Based on the salary data of the latest quarter (Q4, 2020), is gender an important factor?
+We consider the employees in financial quarter 4 in 2020 as the current employees. Before analyzing the relationship between salary and gender in current employees, we need to consider if there exist other variables that affect employees' salaries, such as productivity, team, etc. We will demonstrate our analysis about variables that affect employees' salary in data visualization, prior to the modeling.
+
+#### Data Visualization
+To give an overview of the real situation in the salary data, we built up a salary boxplot that can make a comparison by two gender types in this plot (Males and Females). From Figure 3, we surprisingly found a gap in the salary when we classify the data by gender. We could observe that the average salary of male employees is about \$40000, and the average salary of female employees is much less than \$40000. Also, some outliers are gathering around \$150000, \$120000, and \$70000 in two boxplots, which means that employees would have different levels of salary and the majority would have salary around \$40000.
+
+![gender's salary compare in 2020 Q4](salcompare.png)
+
+In Figures 4 and 5, we could observe the difference of males' and females' salaries in different teams and role seniority. From Figure 4, the average salary of employees in each mean is similar, which is around \$40000. But we could observe that males' salaries are higher than females' in most of the teams, such as in Data, Design, Operations, etc. And in Figure 5, we grouped the data by the role seniority and we observed that the average salary is increasing from Entry-level up to Vice president. The boxplots in Figures also show that generally speaking, men earn a little more than women in every role seniority. Thus, we could consider the team and role seniority variables are random effects in our model.
+
+![gender's salary varies in teams](salteam.png)
+
+![gender's salary varies in roles](salrole.png)
+
+From Figure 6, we notice that people who exceed expectations are all males and people who need improvement are all females. So we need to explore whether salary depends on gender. If the salary does not depend on gender, then this result is caused by the situation that females spend more time on family issues (pregnancy, etc.) rather than on tasks in the company. Thus it could explain why we observe only females need improvement and lower salary. Thus, we need to treat the productivity and leadership for level variables as the fixed effects in our model.
+
+![gender's leadership level](levleader.png)
+
+We highly doubt the gender fairness of making salary decisions in Black Saber Software to combine all the features we observed from data plotting. We will build **linear mixed models** on describing the relationship between salary and gender, and other fixed/random effects we discussed earlier to determine whether gender is a significant variable to employees' salaries.
+
+#### Modeling
+After comparing different models with likelihood ratio tests, we set ```gender```, ```leadership_for_level```, ```productivity``` as the fixed effects, ```role_seniority``` as the random effect and the ```team``` as the random slope in our final model of salary.
+
+In addition to a random intercept, this model also contains a random slope in practice. If an employee has a positive random effect who has a high-level position, then their salary increase more quickly with role seniority on average, while a negative random effect indicates their salary increase less quickly with role seniority on average, or possibly get worse, depending on the variance of the random effect that is shown in the result.
+
+Here is the model where we consider gender as a fixed effect:
+$$salary_{ij} = [\beta_0 + \beta_1 \cdot gender_{ij} + \beta_2 \cdot leadership\_for\_level_{ij} + \beta_3 \cdot productivity_{ij} + (\beta_4 + team_j)]$$
+$$+ [\epsilon_{ij} + role\_seniority_j]$$
+
+where $$\epsilon_{ij} \sim \mathcal{N}(0,\;\sigma^2_e)$$
+$$team_j \sim \mathcal{N}(0,\;\sigma^2_{team})$$
+$$role\_seniority_j \sim \mathcal{N}(0,\;\sigma^2_{role\_seniority})$$
+
+Here is our R code and output:
+
+```{r, echo=TRUE, eval = FALSE}
+model_salary_final <- lmer(salary~gender + leadership_for_level + productivity 
+                           + (1 + team|role_seniority), data=current_employees)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Fixed effects:
+                                           Estimate Std. Error t value
+(Intercept)                              83980.2217 11195.9123   7.501
+genderWoman                              -2466.1038   258.1557  -9.553
+leadership_for_levelExceeds expectations  -764.6620   971.0258  -0.787
+leadership_for_levelNeeds improvement    -1281.2422   918.6368  -1.395
+productivity                                -0.9468     8.6436  -0.110
+```
+
+```{r, echo=TRUE, eval = FALSE}
+# fit model without gender to see if gender is significant
+model_salary_no_gender <- lmer(salary~leadership_for_level + productivity 
+                               + (1 + team|role_seniority), data=current_employees)
+lrtest(model_salary_no_gender, model_salary_final)
+```
+
+```{r, echo=TRUE, eval = FALSE}
+Likelihood ratio test
+
+Model 1: salary ~ leadership_for_level + productivity + (1 + team | role_seniority)
+Model 2: salary ~ gender + leadership_for_level + productivity + (1 + 
+    team | role_seniority)
+  #Df  LogLik Df  Chisq Pr(>Chisq)    
+1  41 -5670.3                         
+2  42 -5623.0  1 94.405  < 2.2e-16 ***
+```
+
+In the fixed-effect table, we have ```gender``` as -2466.10, and ```leadership_for_levelExceeds expectations``` as -764.96, ```leadership_for_levelNeeds improvement``` as -1281.33, and ```productivity``` as -0.94. The ```gender``` estimate means that, if we remain same levels of other factors (i.e. ```leadership_for_level```, ```productivity```, etc.) but change our gender from man to woman, we will receive a salary decrease of $2466.1. To determine whether the gender factor is significant in our model, we use likelihood ratio tests to compare the likelihood of our final model and the likelihood of the model without the gender factor. From the result, we could conclude that the fixed effect ```gender``` is significant since the difference between the likelihood of these two models is significant (p-value < 0.05). In the meantime, productivity has almost no effect on salary, because the ```productivity``` estimate in our model is just -0.94. Comparing to the ```genderWoman``` coefficient, the ```productivity``` coefficient is much smaller, which could bring us the result that gender affects employees' salaries more than productivity does. Thus, we are fairly confident that gender bias exists in making salary decisions in Black Saber Software.
+
+## Is gender an influential factor involves in Black Saber Software’s position promotion?
+
+### Explortary Data Analysis
+Here are 597 observations in our data, which is a large sample size. From Table 1 below, we could observe that there are relative large group of employees who do not have any promotion until 2020 Q4. In this case, we believe that those employees who have no promotion so far are the new employees in the company. 
+
+Table 1 also contains number of employees who have no record of the leadership levels during their careers in the company, we could observe that there is only one employee who never get "Appropriate for level" records in his/her career life and employees who get no record of "Needs improvement" or "Exceeds expectations" occupants almost 1/4 of the employees in the company. We're considering there exists a relationship between not getting expectation or improvement and the number of promotion among employees.
+
+\begin{center}
+Table 1: Number of occurrence about employees' records of promotion or leadership levels
+\end{center}
+
+|  Result  | No Promotion | No Appropriate | No Expectation | No Improvement |
+|---------:|-------------:|---------------:|---------------:|---------------:|
+|  FALSE   |           305|             596|             140|              76|
+|  TRUE    |           292|               1|             457|             521|
+
+We would introduce **ZIP (zero-inflated Poisson) Model** in case to solve the problem that a lot of zero responses are occurring in our data.
+
+### Modeling 
+
+After comparing different models with likelihood ratio tests, we conclude our final model as following:
+
+A zero-inflated Poisson regression model to take employees with no promotion records into account consists of two parts:
+
+- First level: this part models the association, among employees, between number of number of promotions and the predictors of gender. To eliminate the affect of years of service to the number of promotion, we consider that ```year_of_service``` as an offset. The form is shown as the following expression:
+$$log(\lambda) = \beta_{10} + \beta_{11} \cdot gender + (\beta_{12} \cdot years\_of\_service + log(s_i))$$
+where $s_i$ is the offset variable to scale the effect of employment period, $\lambda$ is the mean number of promotions per person.
+
+- Second level: this part uses a predictor for number of "No Expectation" records to obtain an estimate of the proportion of employees with no promotion records based on the reported zeros. The form is shown as the following expression:
+$$log(\frac{\alpha}{1 - \alpha}) = \beta_{20} + \beta_{21} \cdot no\_expectation$$
+where $\alpha$ is the probability of someone has no promotions.
+
+```{r, echo=TRUE, eval = FALSE}
+model_promotion_final <- zeroinfl(num_promotion~gender + offset(years_of_service) 
+                                  | no_expectation, data=promotion_data)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Count model coefficients (poisson with log link):
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -4.78999    0.05201 -92.106  < 2e-16 ***
+genderWoman -0.47284    0.09104  -5.194 2.06e-07 ***
+
+Zero-inflation model coefficients (binomial with logit link):
+                   Estimate Std. Error z value Pr(>|z|)
+(Intercept)         -10.095     14.318  -0.705    0.481
+no_expectationTRUE    5.612     14.349   0.391    0.696
+```
+
+```{r, echo=TRUE, eval = FALSE}
+Log-likelihood: -786.4 on 4 Df
+```
+
+```{r, echo=TRUE, eval = FALSE}
+# fit model without gender to see if gender is significant
+model_promotion_no_gender <- zeroinfl(num_promotion~offset(years_of_service) 
+                                      | no_expectation, data=promotion_data)
+lrtest(model_promotion_no_gender, model_promotion_final)
+```
+
+```{r, echo=TRUE, eval = FALSE}
+Likelihood ratio test
+
+Model 1: num_promotion ~ offset(years_of_service) | no_expectation
+Model 2: num_promotion ~ gender + offset(years_of_service) | no_expectation
+  #Df  LogLik Df  Chisq Pr(>Chisq)    
+1   3 -800.60                         
+2   4 -786.44  1 28.308  1.035e-07 ***
+```
+
+Our model uses ```no_expectation``` to distinguish whether employees have promotions (“Zero-inflation model coefficients”) and ```gender``` to help explain the differences in the number of promotions among employees (“Count model coefficients”).
+
+We first consider “Count model coefficients”, which provide information on how the ```gender``` of an employee who have been promoted are related to the number of promotion reported by that employee during his/her career life. From the result, we could conclude that the average number of promotions for females is $e^{-0.47284} = 0.6232$ times the number of promotions for males (Z = -5.194, p-value < 0.05). To determine whether the gender factor is significant in our model, we use likelihood ratio tests to compare the likelihood of our final model and the likelihood of the model without the gender factor. Thus, we could conclude that ```gender``` is an significant factor in our model (p-value < 0.05), which means that gender bias exists in making promotion decisions in Black Saber Software.
+
+
+## Based on the hiring data is gender an influential factor?
+
+### Data visulzation: 
+As the hiring processes have three main rounds, the raw data of hiring is more complex than salary data and promotion data. Before making any progress, the Table 2 shows the number of people who have passed in different phases in the hiring pipeline. We could observe that there were 613 people in the beginning and only 10 of them got hired in the final round.
+\newpage
+\begin{center}
+Table 2: Number of candidates in different phases of hiring pipeline
+\end{center}
+
+|  Phases  | Number of people |
+|---------:|-----------------:|
+|  Phase 1 |               613|
+|  Phase 2 |               300|
+|  Phase 3 |                22|
+|  Hired   |                10|
+
+To know the real gender distribution of the hiring data, we conducted Figure 7 with male candidates in dark blue and females in light blue. We observed that an almost equal percentage of males and females rejected in all three phases but a huge gender gap appears in the hired phase.
+
+
+![gender's status in hiring phases](statushire.png)
+
+To make further investigation on each phase, we build up two more plots about phase 2: Figure 8 and Figure 9. In Figure 8, we can see that AI rated more males' speaking skills than females' in 5-10, and more females' speaking skills than males' in 0-5. The similar situation also appears in the Figure 9, where AI rates the leadership of males much more higher than females in average, and we could observe that there is no females got a rate of 10 in leadership marking.
+
+
+
+![gender's occupation in speaking skills](speakskill.png)
+
+
+
+
+![gender's occupation in leadership presence](leaderpresence.png)
+
+We doubt the gender fairness of making hiring decisions in Black Saber Software to combine all the features we observed from data plotting. We will build **generalized linear model(GLM)** on describing the relationship between whether candidates pass the phases and ```gender```, and other potential effects in the model (e.g. ```gpa```, ```cv```, ```cover_letter```, etc.).
+
+### Modeling
+Since the hiring pipeline have three different phases, we are building our models in those three phases. 
+
+Here is our final model of phase 1, after comparing other potential models using likelihood ratio tests:
+$$log(\frac{p_i}{1 - p_i}) = \beta_0 + \beta_1 \cdot team\_applied\_for + \beta_2 \cdot cover\_letter + \beta_3 \cdot cv + \beta_4 \cdot gpa $$
+$$+ \beta_5 \cdot extracurriculars + \beta_6 \cdot work\_experience$$
+where $p_i$ is the probability of passing phase 1 for observer $i$, and we have $$result \sim Binomial(n_i, p_i)$$
+
+```{r, echo=TRUE, eval = FALSE}
+model_phase1_with_gender <- glm(result ~ gender + team_applied_for + cover_letter + 
+                                  cv + gpa + extracurriculars + work_experience
+                                , family=binomial(link=logit), data=pass_phase1)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -158.8808  5679.4915  -0.028 0.977683    
+genderWoman                 1.0901     1.0361   1.052 0.292756    
+team_applied_forSoftware   -1.0528     0.9302  -1.132 0.257735    
+cover_letter               61.7582  2870.4600   0.022 0.982835    
+cv                         50.3709  4900.6475   0.010 0.991799    
+gpa                        12.7695     3.4498   3.702 0.000214 ***
+extracurriculars            9.9372     2.4756   4.014 5.97e-05 ***
+work_experience            11.8482     2.9814   3.974 7.07e-05 ***
+```
+
+```{r, echo=TRUE, eval = FALSE}
+model_phase1_final <- glm(result ~ team_applied_for + cover_letter + cv + gpa + 
+                               extracurriculars + work_experience
+                             , family=binomial(link=logit), data=pass_phase1)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Coefficients:
+                          Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              -150.9126  5522.2109  -0.027 0.978198    
+team_applied_forSoftware   -0.9072     0.8994  -1.009 0.313137    
+cover_letter               58.9957  2889.5409   0.020 0.983711    
+cv                         48.7836  4705.8231   0.010 0.991729    
+gpa                        11.9385     3.1381   3.804 0.000142 ***
+extracurriculars            9.4769     2.3060   4.110 3.96e-05 ***
+work_experience            10.8180     2.5772   4.198 2.70e-05 ***
+```
+
+```{r, echo=TRUE, eval = FALSE}
+# phase 1 model with gender
+AIC = 49.551, BIC = 84.754
+
+# phase 1 model without gender
+AIC = 48.753, BIC = 79.555
+```
+
+```{r, echo=TRUE, eval = FALSE}
+lrtest(model_phase1_final, model_phase1_with_gender)
+```
+
+```{r, echo=TRUE, eval = FALSE}
+Likelihood ratio test
+
+Model 1: result ~ team_applied_for + cover_letter + cv + gpa + extracurriculars + 
+    work_experience
+Model 2: result ~ gender + team_applied_for + cover_letter + cv + gpa + 
+    extracurriculars + work_experience
+  #Df  LogLik Df Chisq Pr(>Chisq)
+1   7 -17.377                    
+2   8 -16.776  1 1.202     0.2729
+```
+
+In the model which considering ```gender``` as a factor, we could observe that the coefficient of ```gender``` is not significant (p-value > 0.05), so we cannot conclude anything about gender. We also observe that both AIC and BIC of the model which considering ```gender``` as a factor is greater than those of the model without ```gender```, which means that ```gender``` is unnecessary in our model. The likelihood ratio test provides stronger evidence of rejecting the more complex model. Thus, we can conclude that gender is not significant in our model from our model summary. 
+
+In this case, we preferred to use the model without including ```gender```. In our final model of hiring phase 1,  we could make an inference that the ```gpa``` and the ```work_experience``` have more significant impact on whether candidates could pass the phase 1 hiring pipeline (the coefficient on ```gpa``` = 11.94, the coefficient on ```work_experience``` = 10.82, p-value < 0.05).
+
+Here is our final model of phase 2, after comparing other potential models using likelihood ratio tests:
+$$log(\frac{p_i}{1 - p_i}) = \beta_0 + \beta_1 \cdot technical\_skills + \beta_2 \cdot writing\_skills + \beta_3 \cdot speaking\_skills $$
+$$+ \beta_4 \cdot leadership\_presence$$
+where $p_i$ is the probability of passing phase 2 for observer $i$, and we have 
+$$result \sim Binomial(n_i, p_i)$$
+
+```{r, echo=TRUE, eval = FALSE}
+model_phase2_with_gender <- glm(result ~ gender + technical_skills + writing_skills + 
+                                  speaking_skills + leadership_presence
+                                , family=binomial(link=logit), data=pass_phase2)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)         -20.77341    3.75121  -5.538 3.06e-08 ***
+genderWoman          -0.56658    0.72247  -0.784  0.43291    
+technical_skills      0.08106    0.02035   3.984 6.76e-05 ***
+writing_skills        0.09222    0.02384   3.868  0.00011 ***
+speaking_skills       0.71556    0.16781   4.264 2.01e-05 ***
+leadership_presence   0.89593    0.20439   4.383 1.17e-05 ***
+```
+
+```{r, echo=TRUE, eval = FALSE}
+model_phase2_final <- glm(result ~ technical_skills + writing_skills + speaking_skills + 
+                            leadership_presence
+                          , family=binomial(link=logit), data=pass_phase2)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)         -20.67038    3.67429  -5.626 1.85e-08 ***
+technical_skills      0.07893    0.01972   4.003 6.26e-05 ***
+writing_skills        0.08723    0.02238   3.898 9.71e-05 ***
+speaking_skills       0.71593    0.16554   4.325 1.53e-05 ***
+leadership_presence   0.91114    0.20550   4.434 9.26e-06 ***
+```
+
+```{r, echo=TRUE, eval = FALSE}
+# phase 1 model with gender
+AIC = 81.247, BIC = 103.4098
+
+# phase 1 model without gender
+AIC = 79.877, BIC = 98.34566
+```
+
+```{r, echo=TRUE, eval = FALSE}
+lrtest(model_phase2_final, model_phase2_with_gender)
+```
+
+```{r, echo=TRUE, eval = FALSE}
+Likelihood ratio test
+
+Model 1: result ~ technical_skills + writing_skills + speaking_skills + 
+    leadership_presence
+Model 2: result ~ gender + technical_skills + writing_skills + speaking_skills + 
+    leadership_presence
+  #Df  LogLik Df  Chisq Pr(>Chisq)
+1   5 -34.938                     
+2   6 -34.624  1 0.6296     0.4275
+```
+
+In the model which considering ```gender``` as a factor, we could observe that the coefficient of ```gender``` is not significant (p-value > 0.05), so we cannot conclude anything about gender. We also observe that both AIC and BIC of the model which considering ```gender``` as a factor is greater than those of the model without ```gender```, which means that ```gender``` is unnecessary in our model. The likelihood ratio test provides stronger evidence of rejecting the more complex model. Thus, we can conclude that gender is not significant in our model from our model summary. 
+
+In this case, we preferred to use the model without including ```gender```. In our final model of hiring phase 2,  we could make an inference that the ```leadership_presence``` and the ```speaking_skills``` have more significant impact on whether candidates could pass the phase 2 hiring pipeline (the coefficient on ```leadership_presence``` = 0.91, the coefficient on ```speaking_skills``` = 0.72, p-value < 0.05).
+
+Here is our final model of phase 3, after comparing other potential models using likelihood ratio tests:
+$$log(\frac{p_i}{1 - p_i}) = \beta_0 + \beta_1 \cdot interviewer\_rating\_1 + \beta_2 \cdot interviewer\_rating\_2$$
+where $p_i$ is the probability of passing phase 2 for observer $i$, and we have 
+$$result \sim Binomial(n_i, p_i)$$
+
+```{r, echo=TRUE, eval = FALSE}
+model_phase3_with_gender <- glm(result ~ gender + interviewer_rating_1 + interviewer_rating_2
+                                , family=binomial(link=logit), data=pass_final)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Coefficients:
+                       Estimate Std. Error z value Pr(>|z|)
+(Intercept)            -2557.10 1488199.97  -0.002    0.999
+genderWoman              -48.30  254384.75   0.000    1.000
+interviewer_rating_1      15.06    9039.41   0.002    0.999
+interviewer_rating_2      18.94   11079.39   0.002    0.999
+```
+
+```{r, echo=TRUE, eval = FALSE}
+model_phase3_final <- glm(result ~ interviewer_rating_1 + interviewer_rating_2
+                          , family=binomial(link=logit), data=pass_final)
+```
+
+```{r, echo=TRUE,  eval = FALSE}
+Coefficients:
+                       Estimate Std. Error z value Pr(>|z|)
+(Intercept)            -3482.32 1681388.48  -0.002    0.998
+interviewer_rating_1      20.13   10135.85   0.002    0.998
+interviewer_rating_2      25.41   12371.13   0.002    0.998
+```
+
+```{r, echo=TRUE, eval = FALSE}
+lrtest(model_phase3_final, model_phase3_with_gender)
+```
+
+```{r, echo=TRUE, eval = FALSE}
+Likelihood ratio test
+
+Model 1: result ~ interviewer_rating_1 + interviewer_rating_2
+Model 2: result ~ gender + interviewer_rating_1 + interviewer_rating_2
+  #Df      LogLik Df Chisq Pr(>Chisq)
+1   3 -3.8682e-09                    
+2   4 -2.5512e-09  1     0          1
+```
+
+From the result of the model, we cannot conclude anything since two factors ```interviewer_rating_1``` and ```interviewer_rating_2``` are fairly random numbers. Thus, we don't need to discuss about whether ```gender``` would affect the phase 3 hiring pipeline.
+
+In conclusion, the ```gender``` factor does not have significant effectiveness in neither of three phases in the hiring pipeline. Thus, we are fairly confident that gender bias does not exist in AI making hiring decisions in Black Saber Software.
+
+## Discussion
+
+We present our data analysis about whether gender bias exists in hiring phases, promotion and salary. From the final result of our models, we could conclude that the hiring process is gender parity-free, but gender bias appears in promotion decisions and salary distributions in Black Saber Software.
+
+### Strengths and limitations
+#### Strengths:
+
+Our models are all generated steps by steps since we have compared many potential models to wrap up our final model. It took us more time in modeling rather than in explaining the results, but this modeling method will make our final model more fitted, and bring us more precise results. To help a large company with more than 600 employees like Black Saber Software, spending more time on modeling could make the result of the investigation more accurate, which is a worth thing to do. 
+
+Our models are not only suitable for this set of data, but they can also be reused for future Black Saber Software’s employees. Our model is flexible for analyzing the relationship between gender and salary, hiring rate, and the number of promotions. It is also applicable for similar data set to help more companies like Black Saber Software test their gender fairness issue.
+
+#### Limitations:
+
+A limitation of this analysis is that we used  the data from the current existing employees when we analyze the promotion and salary fairness. And only applying the current employee's data may have introduced bias into our models. Because we did not know the resignation rate and dismissal rate since we can only have the data that is provided. A possibility is that employees who met strong gender biases would withdraw themselves out of the position, or just got dismissed. In this case, even if we tried our best in dueling with the provided data, our conclusion still could be biased since the data has been biased already. In order to make further adjustment or investigation, more data should be required, including the data of resigned employees and dismissed employees.
+
+Another limitation may result from modeling. we have to admit that our team felt restricted by the limited knowledge and perception of ourselves. In order to get an accurate and reliable conclusion to answer our research questions, we have to choose those statistical methods and models that we understand most and use most frequently. However, this might not be perfect for all situations. And some of our findings were not fully explained and expressed by our current models. To explain more about the data and those findings, other useful models and statistical tools should be introduced into this research.
+
+
+\newpage
+# Consultant information
+## Consultant profiles
+
+**Fuyuan Jiang**. Fuyuan is a senior consultant with Consulting Expert. He specializes in data visualization and data storing. Fuyuan earned his Bachelor of Science, Major in Statistics and Human Health, from the University of Toronto in 2021.
+
+**Jiakai Shi** Jiakai is a senior consultant with Consulting Expert. He specializes in data storing and model building. Jiakai earned his Bachelor of Science, Major in Statistics and specialist in computer science, from the University of Toronto in 2022.
+
+**Jie Huang** Jie is a junior consultant with Consulting Expert. She specializes in statistical communication and report layout. Jie earned her Bachelor of Science, Major in Statistics and Mathematics, from the University of Toronto in 2022.
+
+**Junming Zhang** Junming is a senior consultant with Consulting Expert. He specializes in software coding and machine learning. Junming earned his Bachelor of Science, Major in Statistics and specialist in computer science, from the University of Toronto in 2021.
+
+
+**Wenqing Cao** Wenqing Cao is a junior consultant with Consulting Experts. She specializes in reproducible analysis and statistical communication. Wenqing Cao earned the Bachelor of Science,  Major in Statistics and Mathematics and Specialist in Computer Science from the University of Toronto in 2022.
+
+
+
+## Code of ethical conduct
+
+For this collaboration with Black Saber Software, we are committed to:
+
+a.	To the extent possible, provide the client with a choice among valid alternative statistical methods that may vary in scope, cost, or precision.
+b.	Make every effort to explain any anticipated adverse consequences of failing to follow an agreed-upon sampling or analysis plan. 
+c.	Apply statistical sampling and analysis procedures scientifically without predetermining the results. 
+d.	Strives to make new statistical knowledge widely available for the benefit of society as a whole and beyond his/her own application. 
+e.	Understands and complies with confidentiality requirements for data collection, release, and distribution, as well as restrictions on the use of data-by-data providers (to the extent required by law), and thus protects the use and disclosure of data accordingly Protect privileged information of employers, customers, or contributors.
+
+\newpage
+# Reference
+[1]6.1 - Introduction to Generalized Linear Models: STAT 504. PennState: Statistics Online Courses. (n.d.). https://online.stat.psu.edu/stat504/lesson/6/6.1. 
+
+[2]Advanced Solutions International, I. (n.d.). Ethical Guidelines for Statistical Practice. https://www.amstat.org/ASA/Your-Career/Ethical-Guidelines-for-Statistical-Practice.aspx.
+
+[3]Atahk. (n.d.). atahk/pscl. GitHub. https://github.com/atahk/pscl/. 
+
+[4]Bates, D., Mächler, M., Bolker, B., &amp; Walker, S. (n.d.). Fitting Linear Mixed-Effects Models Using lme4. Journal of Statistical Software. https://www.jstatsoft.org/article/view/v067i01/0. 
+
+[5]Comprehensive R Archive Network (CRAN). (2020, May 17). Tidying Methods for Mixed Models [R package broom.mixed version 0.2.6]. The Comprehensive R Archive Network. https://cran.r-project.org/package=broom.mixed. 
+
+[6]Comprehensive R Archive Network (CRAN). (n.d.). Package Hmisc. CRAN. https://CRAN.R-project.org/package=Hmisc. 
+
+[7]Comprehensive R Archive Network (CRAN). (n.d.). Package MuMIn. CRAN. https://CRAN.R-project.org/package=MuMIn. 
+
+[8]Create Elegant Data Visualisations Using the Grammar of Graphics. Create Elegant Data Visualisations Using the Grammar of Graphics • ggplot2. (n.d.). https://ggplot2.tidyverse.org/. 
+[9]Cui, B. (2020, December 15). Automate Data Exploration and Treatment [R package DataExplorer version 0.8.2]. The Comprehensive R Archive Network. https://cran.r-project.org/package=DataExplorer. 
+
+[10]HOME. IDRE Stats. (n.d.). https://stats.idre.ucla.edu/other/mult-pkg/faq/general/faqhow-are-the-likelihood-ratio-wald-and-lagrange-multiplier-score-tests-different-andor-similar/. 
+
+[11]Journal of Statistical Software. (n.d.). https://www.jstatsoft.org/index. 
+
+[12]Lattice - Multivariate Data Visualization with R - Figures and Code. (n.d.). http://lmdvr.r-forge.r-project.org/figures/figures.html. 
+
+[13]Legler, P. R. and J. (2021, January 26). Beyond Multiple Linear Regression. Chapter 4 Poisson Regression. https://bookdown.org/roback/bookdown-BeyondMLR/ch-poissonreg.html#cs:drinking. 
+
+[14]LizeLize 322 bronze badges, &amp; dmartindmartin 2. (1965, August 1). Linear mixed model fit by REML ['lmerMod'] not displaying variance in output. Cross Validated. https://stats.stackexchange.com/questions/243472/linear-mixed-model-fit-by-reml-lmermod-not-displaying-variance-in-output.
+
+[15]Oskolkov, N. (2020, September 8). How Linear Mixed Model Works. Medium. https://towardsdatascience.com/how-linear-mixed-model-works-350950a82911. 
+[16]The R Journal. CRAN. (n.d.). https://CRAN.R-project.org/doc/Rnews/. 
+
+[17]The R Project for Statistical Computing. R. (n.d.). https://www.R-project.org/. 
+
+[18]Reshaping Data with the reshape Package - jstatsoft.org. (n.d.). https://www.jstatsoft.org/v21/i12/paper. 
+
+[19]Statistical Society of Canada Code of Conduct. (n.d.). 
+
+[20]Taiyun. (n.d.). taiyun/corrplot. GitHub. https://github.com/taiyun/corrplot. 
+
+[21]Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D. A., François, R., … Yutani, H. (2019, November 21). Welcome to the Tidyverse. Journal of Open Source Software. https://joss.theoj.org/papers/10.21105/joss.01686. 
+
+[22]Zeileis, A., Kleiber, C., &amp; Jackman, S. (n.d.). Regression Models for Count Data in R. Journal of Statistical Software. http://www.jstatsoft.org/v27/i08/

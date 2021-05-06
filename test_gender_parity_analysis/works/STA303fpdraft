@@ -1,0 +1,894 @@
+---
+title: "Consulting Report of testing gender parity in Black Saber Software"
+subtitle: "Testing Gender parity existence in the processes of hiring, wages, and promotion"
+author: "Report prepared for Black Saber Software by Consulting Expert"
+date: 2021-04-21
+lang: "en"
+output:
+  pdf_document:
+    template: report.tex
+    toc: true
+    toc_depth: 2
+titlepage: true
+titlepage-color: "6C3082"
+titlepage-text-color: "FFFFFF"
+titlepage-rule-color: "FFFFFF"
+titlepage-rule-height: 2
+---
+
+```{r, message = FALSE, echo=FALSE}
+library(tidyverse)
+# this should supress all code and messages
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, message = FALSE,warnings=FALSE, fig.width = 14, fig.height = 9)
+```
+
+```{r data, echo=FALSE, include=FALSE}
+black_saber_current_employees <- read_csv("./data/black-saber-current-employees.csv")
+final_hire<- read_csv("./data/final-hires-newgrad_2020.csv")
+phase1 <-read_csv("./data/phase1-new-grad-applicants-2020.csv") 
+phase2 <-read_csv("./data/phase2-new-grad-applicants-2020.csv") 
+phase3 <-read_csv("./data/phase3-new-grad-applicants-2020.csv")
+```
+
+\newpage
+# Executive summary
+
+Dear all members of the Black Saber Software board of director, 
+Thanks for inviting Consulting Experts to participate in this potential gender parity investigation of Black Saber Software. Here, Consulting Expert will promise the legal responsibility for the truth and accuracy of what we say in this summary. And we will promise the legal responsibility of the safety of your provided data of your current employees.    
+As what we have been told previously, our investigation will be mainly focusing on testing the fairness of the sections of hiring, salary and position promotion.
+
+* In the provided data, we found that salary was calculated non-accumulated. And we decided to make some further manipulation with it and make it related to gender to see if there were some evidence to help us conclude the existence of the gender bias in the salary distribution. Besides, since each individual's salary is highly related to the overall situation will their work teams, we considered increasing the weight of comparing the salary difference within each team more than just reaching the difference between each individual. And after we have done all the testings, we can confidently conclude gender parity in the salary distribution among most of the work teams. Besides, gender bias commonly existed in most positions, from an entry-level position to a high-level management position.
+
+* To test if there is gender parity in the promotion process of Black Saber Software, we calculated the service years of every current employees. After we find the years of service for each individual, we make a few steps of analysis. We found that gender is one of the most influential factors among all possible factors that might influence the promotion of employees. 
+
+* As the email informed, the processes of hiring of Black Saber Software contains three rounds, and the first two rounds are application qualification checks which are highly relied on AI screening; and since the last round of hiring is made of real person interviews which checked by real interviewers, AI does not have any chance to made any decision on the third round of hiring process. In this case, we decided to focus more on the first two rounds of the hiring process, to test if the training AI have any potential selection biases due to the gender difference of job applicants. From our analysis of your provided data in the processes, we can conclude that AI have no gender preference in the first two rounds of hiring pipeline, and we have no evidence to say that AI has gender biases. The third round of hiring process is made by interviewers and it is also gender parity free.
+
+And in our final statement of this investigation, we will conclude that hiring process is gender parity free, but gender bias appears in promotion decisions and salary distributions in Black Saber Software.
+
+\newpage
+# Technical report
+
+## Introduction
+
+This statistical report is requested by Black Saber Software and provided by Consulting Expert as the result of an investigation of the gender parity issue towards Black Saber Software.
+
+This investigation is mainly focused on the gender issue checks on three main areas of Black Saber Software: hiring pipeline, salary decision, promotion qualification.
+
+All used data were provided and authorized by Black Saber Software, and all the data were collected from the current employees of Black Saber Software. Since the prepared data contains many factors that might influence the conclusion of our investigation, in this case, we took many complicated data manipulation and sorting before modeling and plotting. Besides, only considering the direct relationship between gender and those three processes could be highly biased towards our conclusion, to due with this issue, we also took many other factors inside our considerations. To make a more precise logic flow for this investigation, we made three major testable and measurable hypotheses, and all statistical analyses were made around those three hypotheses.
+
+After all, we have found the evidence to answer the questions that Black Saber Software asked previously. And Consulting Expert has cleaned all the data used in this investigation from our devices with zero backups to keep our data safety promises. All three significant questions and answers of them will be demonstrated in this report detailly.
+
+### Research questions
+We have three major concerns in this investigation: \
+
+
+* If gender an influential factor involves in Black Saber Software's salary decision ?\
+ 
+* If gender an influential factor involves in Black Saber Software's position promotion ?\
+
+* If gender an influential factor involves in each phase of the hiring pipeline of Black Saber Software ?\
+
+```{r eda_current_employees, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+black_saber_current_employees <- read_csv("data/black-saber-current-employees.csv")
+current_employees <- black_saber_current_employees %>%
+  filter(financial_q == "2020 Q4") %>%
+  mutate(salary = gsub("\\$", "", salary)) %>%
+  mutate(salary = gsub("\\,", "", salary)) %>%
+  mutate(salary = as.numeric(salary)) %>%
+  mutate(employee_id = as.character(employee_id)) %>%
+  mutate(gender = as.factor(gender)) %>%
+  mutate(team = as.factor(team)) %>%
+  mutate(role_seniority = as.factor(role_seniority)) %>%
+  mutate(role_seniority = fct_relevel(role_seniority, "Director",  after=7)) %>%
+  mutate(leadership_for_level = as.factor(leadership_for_level)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say")
+```
+## Based on the salary data of the latest quarter (Q4, 2020), is gender an important factor?
+Firstly, we consider the employees in financial quarter 4 in 2020 as the current employees. Since salary and team are related, so we should take them into account when grouping. 
+We first visualize some features of our salary distribution by **boxplots** and **standard distribution plots**. Then through boxplot by figure "Males' and Females' Salary in Different Teams (2020 Q4)", we find that except for the People and talent team, women's wages are significantly higher than men's wages, software women's wages are slightly higher than men's wages, the other is that men's wages are higher than women's wages. On average, men earn more than women.
+
+#### data visualization:
+
+To give an over view of the real situation in the salary data, we built up a salary boxplot can make a comparison by two gender types in this plot.And we surprisely found a gap in the salary when we classify the data by gender.
+
+
+```{r,fig.width = 6, fig.height = 3}
+ggplot(aes(x=gender, y=salary, color=gender), data=current_employees) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title="Males and felamles salary in 2020 comparison, Q4")
+```
+
+And to watch closer we build a polt of salary distribution mainly on the team difference. And we found that in most teams, males' salary are higher than females'.
+
+
+```{r, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE,fig.width = 6, fig.height = 3}
+# read in the data
+black_saber_current_employees <- read_csv("./data/black-saber-current-employees.csv")
+ggplot(aes(x = gender,y=salary, colour = gender), data = current_employees) +
+  geom_boxplot() +
+  theme_minimal() +
+  facet_wrap(~team, nrow=2) +
+  labs(title = "Males' and Females' Salary in Different Teams (2020 Q4)",
+       x = "Gender",
+       y = "Salary") +
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggsave("images/example2.png", width = 3, height = 1)
+```
+
+Then to watch closer to the real situation inside, we grouped the data by the role seniority, therefore, we observed that the average salary is increasing from Entry-level up to Vice president. The boxplot of role seniority also shows that generally speaking, men earn a little more than women.
+
+
+```{r salary_gender1, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE,fig.width = 6, fig.height = 3}
+# read in the data
+black_saber_current_employees <- read_csv("./data/black-saber-current-employees.csv")
+ggplot(aes(x = gender,y=salary, colour = gender), data = current_employees) +
+  geom_boxplot() +
+  theme_minimal() +
+  facet_wrap(~role_seniority, nrow=2) +
+  labs(title = "Males' and Females' Salary under Role Seniority (2020 Q4)",
+       x = "Gender",
+       y = "Salary") +
+  theme(legend.title = element_blank(), legend.position = c(.9, .25), plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggsave("images/example3.png", width = 3, height = 1)
+```
+
+In the box plot "Males' and Females' Productivity and Salary in 2020 Q4" we built up a comparison distribution between salary and productivity to check if the distribution of salary close to productivity distribution.  It is non-surprised to see that the salary distribution plot has a huge difference from the productivity plot: the average of female's productivity is greater than the average male's productivity, where the average female's salary is less than the average male's salary. This finding could be the reason to suspect the existence of gender fairness issues in making salary decisions.
+
+
+```{r pd_sal_gender, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE,fig.width = 6, fig.height = 3}
+ggplot(aes(x = productivity,y=salary, colour = gender), data = current_employees) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  theme_minimal() +
+  labs(title = "Males' and Females' Productivity and Salary in 2020 Q4",
+       x = "Productivity",
+       y = "Salary") + 
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggsave("images/example4.png", width = 3, height = 1)
+```
+
+By figure "Occupation of Males and Females for Levels in Leadership (2020 Q4)", we notice that people who exceed expectations are all males and people who need improvement are all females. Need exploration on whether salary depends on gender. If salary does not depend on gender, then this result is caused by the situation that female spend more time in families rather than in companies (pregnancy, etc.) so that we could observe a relatively lower productivity in female employees. Thus it could explain why we observe only females need improvement and lower salary.
+
+```{r eda_gender, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE,fig.width = 7, fig.height = 3}
+# create a visualisation
+#my_plot <- black_saber_current_employees %>% 
+ggplot(aes(x = leadership_for_level, fill = gender), data = current_employees) + 
+  geom_bar(position = "fill") + 
+  theme_minimal() +
+  labs(title = "Occupation of Males and Females for Levels in Leadership (2020 Q4)",
+       x = "Leadership For Level",
+       y = "Percentage") + 
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+# save your plot in your images folder, you can specify the height and width, too
+# saving this means you can add the image to your executive summary without having to run or rerun the code, if you wish
+ggsave("images/example.png", width = 3, height = 1)
+# notice how the image is included with the ![](file/path.png) below
+```
+
+We highly doubt the gender fairness of making salary decisions in Black Saber Software to combine all the features we observed from data plotting. All found features contradict our previous hypotheses, but we will apply more statistical analysis to check them.
+
+And we decide to use **linear mixed model** because salary is continuous, and let team be the random effect of our model since it is considered as the grouping unit.
+
+#### modeling: 
+
+In modeling the salary data, we first tried to build model 1 (m1) and model 2 (m2), and m1 and m2 include leadership and productivity. Model 1 uses team as the random model effect, and model 2 uses seniority as the random effect of the model. However, after we built m1 and m2, we found that they were not appropriate enough to analyze our research topic and check the hypothesis of salary decisions because productivity is negative in the data.
+```{r salary_gender_V0, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 3}
+# use team and as random effect since it is a grouping units
+# use linear mixted model, since salary continuous
+# consider productivity
+# we do not consider models with only gender or without grouping units, since from above factors
+# 1. other factors may affect the performance
+# 2. grouping units may affect
+# Without consider enough factors may lead to under-fitting
+library(lme4)
+library(stats)
+library(MuMIn)
+library(lmtest)
+library(pscl)
+m1 = lmer(salary~gender + leadership_for_level + productivity + (1|team), data=current_employees)
+m2 = lmer(salary~gender + leadership_for_level + productivity + (1|role_seniority), data=current_employees)
+# we do not use productivity since it is negative, very weird
+# this may happen because it overlaps with leadership_for_level
+summary(m1)
+summary(m2)
+```
+To improve the explaining ability of our model, we rebuild our linear mixed model as model 3 (m3) and model 4 (m4). They are based on m1 and m2 but without the noise of productivity. And if we use m3 and m4, we will reject our H0, as both the evidence from plots previously and the modeling test result show the evidence to support our H1. However, we still not satisfied with modeling since the rejection is not strong and not clear enough to reject H0. Besides, the gender bias issue in a company is a big problem; we can not give a statement based on an imperfect modeling result.
+
+```{r salary_gender_V1, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# compare models with and without productivity
+m3 = lmer(salary~gender + leadership_for_level + (1|team), data=current_employees)
+m4 = lmer(salary~gender + leadership_for_level + (1|role_seniority), data=current_employees)
+# test result: null hypothesis rejected
+# well, we should include productivity although the coefficient looks weird
+# and rejection is not strong
+library(lme4)
+library(stats)
+library(MuMIn)
+library(lmtest)
+library(pscl)
+lrtest(m3, m1)
+lrtest(m4, m2)
+```
+#### And we rebuilt the models and use models with random slope instead of simply random intercept.
+
+```{r salary_gender_V2, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# m1 = lmer(salary~gender + leadership_for_level + productivity + (1|team), data=current_employees)
+# m2 = lmer(salary~gender + leadership_for_level + productivity + (1|role_seniority), data=current_employees)
+# now consider team and role_senority as random slope
+m3 = lmer(salary~gender + leadership_for_level + productivity + (team|role_seniority), data=current_employees)
+m4 = lmer(salary~gender + leadership_for_level + productivity + (role_seniority|team), data=current_employees)
+# summary of two models
+summary(m3)
+summary(m4)
+# by the test result, the null hypothesis rejected
+# we should use models with random slope instead of simply random intercept
+lrtest(m1, m4)
+lrtest(m2, m3)
+```
+
+We compared m3 and m4 by adjusting R^2, AIC, and BIC after we finished changing the modeling of m3 and m4. Based on the test result, m4 has higher marginal R^2, AIC, and BIC than m4; from our analysis experience, this usually indicates overfitting in our model.
+
+```{r salary_gender_V3, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# compare m3 and m4 by
+# 1. adjusted R^2
+# 2. AIC and BIC
+# by the comparison, all metrics of m4
+# m3 = lmer(salary~gender + leadership_for_level + productivity + (team|role_seniority), data=current_employees)
+# m4 = lmer(salary~gender + leadership_for_level + productivity + (role_seniority|team), data=current_employees)
+# Based on the test result, m4 has higher marginal R^2, AIC and BIC than m4, this may indicate overfitting
+# so I choose m3 here
+r.squaredGLMM(m3)
+r.squaredGLMM(m4)
+AIC(m3)
+AIC(m4)
+BIC(m3)
+BIC(m4)
+model_salary = m3
+```
+Therefore, we choose to fit the model without gender to see if gender is significant; as we checked, the null hypothesis was rejected by the complex model.
+
+```{r salary final, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# m3 = lmer(salary~gender + leadership_for_level + productivity + (team|role_seniority), data=current_employees)
+# fit model without gender to see if gender is significant
+model_salary_no_gender = lmer(salary~leadership_for_level + productivity + (team|role_seniority), data=current_employees)
+# the null hypothesis rejected, choose the complex model
+# so it shows that gender may affect the salary
+lrtest(model_salary_no_gender, model_salary)
+model_salary_final <- model_salary
+```
+As we built in the final version of our model, we have evidence to reject our original H0. We conclude the existence of gender parity in the salary decisions of Black Saber Software.
+
+```{r salary model summary, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+summary(model_salary_final)
+```
+
+
+
+
+
+
+
+
+## Informative title for section addressing a research question
+
+```{r promotion_gender, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+years = c("2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020")
+employees <- black_saber_current_employees %>%
+  mutate(salary = gsub("\\$", "", salary)) %>%
+  mutate(salary = gsub("\\,", "", salary)) %>%
+  mutate(salary = as.numeric(salary)) %>%
+  mutate(employee_id = as.character(employee_id)) %>%
+  mutate(gender = as.factor(gender)) %>%
+  mutate(team = as.factor(team)) %>%
+  mutate(role_seniority = as.factor(role_seniority)) %>%
+  mutate(role_seniority = fct_relevel(role_seniority, "Director",  after=7)) %>%
+  mutate(leadership_for_level = as.factor(leadership_for_level)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say") %>%
+  mutate(year = str_trunc(financial_q, 4, "right", "")) %>%
+  group_by(employee_id) %>%
+  mutate(years_of_service = sum(years %in% year))
+
+```
+
+```{r}
+promotion_data <- employees %>%
+  group_by(employee_id) %>%
+  summarise(gender, team, years_of_service, productivity, role_seniority, num_promotion = length(unique(role_seniority)) - 1, qs = n()) %>%
+  distinct_all()
+
+appropriate <- employees %>%
+  group_by(employee_id) %>%
+  filter(leadership_for_level == "Appropriate for level") %>%
+  summarise(num_appropriate = length(unique(financial_q)))
+
+improvement <- employees %>%
+  group_by(employee_id) %>%
+  filter(leadership_for_level == "Needs improvement") %>%
+  summarise(num_improvement = length(unique(financial_q)))
+
+expectation <- employees %>%
+  group_by(employee_id) %>%
+  filter(leadership_for_level == "Exceeds expectations") %>%
+  summarise(num_expectation = length(unique(financial_q)))
+
+promotion_data <- left_join(promotion_data, appropriate, by="employee_id", keep=FALSE)
+promotion_data <- left_join(promotion_data, expectation, by="employee_id", keep=FALSE)
+promotion_data <- left_join(promotion_data, improvement, by="employee_id", keep=FALSE)
+
+promotion_data <- promotion_data %>%
+  mutate(num_appropriate = replace_na(num_appropriate, 0)) %>%
+  mutate(num_expectation = replace_na(num_expectation, 0)) %>%
+  mutate(num_improvement = replace_na(num_improvement, 0))
+
+promotion_data
+
+```
+
+
+
+### modeling: 
+
+Since not all current employees have the chance of promotion, in this case, we have a lot of 0 in promotion data, since many of them have zero time of promotion in Black Saber Software. As you can easily noticed that there are A LOT OF 0 in num_promotion (variable y), need to either reduce the occurrence of 0 or use ZIP directly.
+
+``` {r count 0, include=TRUE, echo=FALSE, message=FALSE}
+# The result shows that nearly half of employees have no promotion
+# so we should use ZIP
+promotion_data <- promotion_data %>% mutate(no_promotion = num_promotion == 0) %>%
+  mutate(no_appropriate = num_appropriate == 0) %>%
+  mutate(no_expectation = num_expectation == 0) %>%
+  mutate(no_improvement = num_improvement == 0)
+promotion_data %>% group_by(no_promotion = num_promotion == 0) %>% count()
+promotion_data %>% group_by(no_appropriate) %>% count()
+promotion_data %>% group_by(no_expectation) %>% count()
+promotion_data %>% group_by(no_improvement) %>% count()
+promotion_data
+```
+
+AS what we can see from the test result, we nearly received **half of employees have no promotion on the record**. In this case, we decided to use **ZIP** directly instead of reducing the occurrence of 0.
+
+After finish dueling with the data issue, we fitted 4 models to check which variable to pick.\
+
+**m1 = zeroinfl(num_promotion~gender + productivity + team + role_seniority, data=promotion_data) **\
+**m2 = zeroinfl(num_promotion~gender + productivity + team, data=promotion_data) **\
+**m3 = zeroinfl(num_promotion~gender + productivity + role_seniority, data=promotion_data) **\
+**m4 = zeroinfl(num_promotion~gender + productivity, data=promotion_data) **\
+
+After reviewed all four models, we decided to select **m4**, because other three models have issue of "system is computational singular".\
+Our Null hypothesis(H0) got rejected, form picking the complex model.
+```{r zip v1 , include=TRUE, echo=FALSE, message=FALSE}
+# fit four models to see which variable to pick
+# select m4 because other three models have "system is computational singular" problem
+# m1 = zeroinfl(num_promotion~gender + productivity + team + role_seniority, data=promotion_data)
+# m2 = zeroinfl(num_promotion~gender + productivity + team, data=promotion_data)
+# m3 = zeroinfl(num_promotion~gender + productivity + role_seniority, data=promotion_data)
+m4 = zeroinfl(num_promotion~gender + productivity, data=promotion_data)
+summary(m4)
+# null hypothesis rejected, pick complex model
+# choose m1 
+m1 = zeroinfl(num_promotion~gender + offset(years_of_service), data=promotion_data)
+lrtest(m4, m1)
+# has warning: fitted probabilities numerically 0 or 1 occurred
+# m5 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_expectation, data=promotion_data)
+m6 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement, data=promotion_data)
+# null hypothesis rejected, pick complex model
+# choose m6
+lrtest(m1, m6)
+# not use team and role_seniority as conditional effect
+# since the null hypothesis may not be rejected and
+# it increases the
+m7 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement | team, data=promotion_data)
+lrtest(m6, m7)
+m8 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement | role_seniority, data=promotion_data)
+lrtest(m6, m8)
+AIC(m6)
+AIC(m8)
+BIC(m6)
+BIC(m8)
+m1 = m6
+```
+
+We tried to add the conditional variables and other variables into our model.
+system is computationally singular: reciprocal condition number = 1.58525e-53FALSE,it makes sense to not use "no_appropriate", since only two observations are not appropriate
+
+
+```{r zip v2 , include=TRUE, echo=FALSE, message=FALSE}
+# add conditional variables and other variables
+# conditional variable: estimate proportion of 0 response
+# m1 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement, data=promotion_data)
+# m2 do not converge
+# m2 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_promotion, data=promotion_data)
+m3 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_improvement, data=promotion_data)
+m4 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_expectation, data=promotion_data)
+m5 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement | no_improvement, data=promotion_data)
+m6 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement | no_improvement + no_expectation, data=promotion_data)
+m7 = zeroinfl(num_promotion~gender + offset(years_of_service) + num_improvement | no_expectation, data=promotion_data)
+m8 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_improvement + no_expectation, data=promotion_data)
+m9 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_improvement + no_expectation + team, data=promotion_data)
+# system is computationally singular: reciprocal condition number = 1.58525e-53FALSE
+# m10 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_improvement + no_expectation + team + role_seniority, data=promotion_data)
+# system is computationally singular: reciprocal condition number = 1.25807e-36FALSE
+# it makes sense to not use "no_appropriate", since only two observations are not appropriate
+# m11 = zeroinfl(num_promotion~gender + offset(years_of_service) | no_improvement + no_expectation +  no_appropriate + team, data=promotion_data)
+m12 = zeroinfl(num_promotion~gender + num_improvement + offset(years_of_service) | no_improvement + no_expectation + team, data=promotion_data)
+m13 = zeroinfl(num_promotion~gender + num_improvement + num_expectation + offset(years_of_service) | no_improvement + no_expectation + team, data=promotion_data)
+m14 = zeroinfl(num_promotion~gender + num_improvement + num_expectation + num_appropriate + offset(years_of_service) | no_improvement + no_expectation + team, data=promotion_data)
+lrtest(m1, m3)
+lrtest(m1, m4)
+lrtest(m3, m5)
+lrtest(m5, m6)
+lrtest(m6, m8)
+lrtest(m8, m9)
+# lrtest(m9, m10)
+# lrtest(m9, m11)
+lrtest(m7, m9)
+lrtest(m7, m12)
+lrtest(m12, m13)
+lrtest(m13, m14)
+model_promotion = m14
+```
+
+we **test if gender is a influential factor** here, as the output of the model showed, the **null hypothesis rejected**: complex model preferred
+```{r promotion gender, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# test if gender is important for influencing promotion
+model_promotion_no_gender = zeroinfl(num_promotion~num_improvement + num_expectation + num_appropriate + offset(years_of_service) | no_improvement + no_expectation + team, data=promotion_data)
+# null hypothesis rejected: complex model preferred
+# gender may affect the promotion
+lrtest(model_promotion_no_gender, model_promotion)
+model_promotion_final = model_promotion
+```
+
+In this case, we conclude that **gender affects the promotion decision in Black Saber Software**
+```{r promotion model summary, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+summary(model_promotion_final)
+```
+
+
+## Based on the hiring data is gender an influential factor?
+
+### Data visulzation: 
+As the hiring processes have three main rounds, the raw data of hiring is more complex than salary data and promotion data. And before made any progress, we compute the number of people who passed the first round in hiring pipeline: 613, and 300 people remained in the second round test, and 22 people remain in the third round of hiring test, and 10 people got finally recruited.  
+```{r combine_phases, echo=FALSE, include=FALSE}
+phase1_2 <- inner_join(phase1, phase2, by = c("applicant_id", "team_applied_for", "cover_letter", "cv", "gpa", "gender", "extracurriculars", "work_experience"), keep=FALSE)
+phase1_2_3 <- inner_join(phase1_2, phase3, by="applicant_id", keep=FALSE)
+final <- phase1_2_3 %>% filter(applicant_id %in% final_hire$applicant_id)
+nrow(phase1)
+nrow(phase1_2)
+nrow(phase1_2_3)
+nrow(final)
+allphase1_2 <- left_join(phase1, phase2, by = c("applicant_id", "team_applied_for", "cover_letter", "cv", "gpa", "gender", "extracurriculars", "work_experience"), keep=FALSE)
+allphase1_2_3 <- left_join(allphase1_2, phase3, by="applicant_id", keep=FALSE)
+```
+
+```{r add_variables}
+allphase <- allphase1_2_3 %>%
+  mutate(status = ifelse(applicant_id %in% final$applicant_id, "hired", 
+                         ifelse(applicant_id %in% phase1_2_3$applicant_id, "rejected at phase3",
+                               ifelse(applicant_id %in% phase1_2$applicant_id, "rejected at phase2", "rejected at phase1")))) %>%
+  mutate(applicant_id = as.character(applicant_id)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say")
+pass_phase1 <- phase1 %>%
+  mutate(result = as.numeric(applicant_id %in% phase1_2$applicant_id)) %>%
+  mutate(applicant_id = as.character(applicant_id)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say")
+pass_phase2 <- phase1_2 %>%
+  mutate(result = as.numeric(applicant_id %in% phase1_2_3$applicant_id)) %>%
+  mutate(applicant_id = as.character(applicant_id)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say")
+pass_final <- phase1_2_3 %>%
+  mutate(result = as.numeric(applicant_id %in% final$applicant_id)) %>%
+  mutate(applicant_id = as.character(applicant_id)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say")
+```
+
+To know the real gender distribution of the hiring data, we conducted a bar plot titled as **Occupation of Males' and Females' Status in Hiring Phases**, with male candidates in dark blue and females in light blue. We observed that almost equal percentage males and females rejected in all three phased but a huge gender gap appears in the hired phase.  
+
+```{r eda_status, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+ggplot(aes(x = status, fill = gender), data = allphase) + 
+  geom_bar(position = "fill") + 
+  theme_minimal() +
+  labs(title = "Occupation of Males' and Females' Status in Hiring Phases",
+   x = "Status",
+   y = "Percentage") + 
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+```
+
+To make further investigation on each phase, we build up two more plots about phase 2: **Occupation of Males' and Females' Speaking Skills in Phase 2** and **Occupation of Males' and Females' Leadership Presence in Phase 2**
+
+
+```{r eda_speaking_leadership, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+ggplot(aes(x = speaking_skills, fill = gender), data = allphase) + 
+  geom_bar(position = "fill") + 
+  theme_minimal() +
+  labs(title = "Occupation of Males' and Females' Speaking Skills in Phase 2",
+   x = "Score",
+   y = "Percentage") + 
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggplot(aes(x = leadership_presence, fill = gender), data = allphase) + 
+  geom_bar(position = "fill") + 
+  theme_minimal() +
+  labs(title = "Occupation of Males' and Females' Leadership Presence in Phase 2",
+   x = "Score",
+   y = "Percentage") + 
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+```
+ In the plot"Occupation of Males' and Females' Speaking Skills in Phase 2" , we can see that AI rated more males' speaking skills in 5-10, and more females' skills in 0-5. The similar situation also appears in the second plot "Occupation of Males' and Females' Leadership Presence in Phase 2", AI rate the leadership of male much more higher than females in average, and no females got a rate of 10 in leadership marking. \
+ 
+ 
+ 
+To make further investigation the AI rating in phase, we build up two more plots about phase 2: **Males' and Females' Writing Skills in Phase 2** and **Males' and Females' Technical Skills in Phase 2**
+
+```{r eda_writing_technical, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+#ggplot(aes(y = writing_skills, x = technical_skills, color = gender), data = allphase) + 
+#  geom_point() +
+#  theme_minimal() +
+#  labs(title = "Males' and Females' Writing Skills and Technical Skills in Phase 2",
+#   x = "Technical Skills",
+#   y = "Writing Skills") + 
+#  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+#  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggplot(aes(x = writing_skills, fill = gender), data = allphase) + 
+  geom_histogram(binwidth = 10) + 
+  theme_minimal() +
+  labs(title = "Males' and Females' Writing Skills in Phase 2",
+   x = "Score",
+   y = "Count") + 
+  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+#ggplot(aes(x = writing_skills, color = gender), data = allphase) + 
+#  geom_freqpoly(binwidth = 10) + 
+#labs(title = "Males' and Females' Writing Skills in Phase 2",
+#   x = "Score",
+#   y = "Count") + 
+#  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+#  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggplot(aes(x = technical_skills, fill = gender), data = allphase) + 
+  geom_histogram(binwidth = 10) + 
+  theme_minimal() +
+  labs(title = "Males' and Females' Technical Skills in Phase 2",
+   x = "Score",
+   y = "Count") + 
+  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+#ggplot(aes(x = technical_skills, color = gender), data = allphase) + 
+#  geom_freqpoly(binwidth = 10) + 
+#  theme_minimal() +
+#  labs(title = "Males' and Females' Technical Skills in Phase 2",
+#   x = "Score",
+#   y = "Count") + 
+#  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+#  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+```
+
+In the plot"Males' and Females' Writing Skills in Phase 2" , we can see that the distribution of AI rating on males' writing skills is very similar to females' skills in . The similar situation also appears in the second plot "Males' and Females' Technical Skills in Phase 2", AI rate the technical skills of male is very close to females in average. \
+
+Note that the first two plot draw a suspecting of AI bias on females in phase 2, but the second two plot contradicted this suspecting.
+In order to make a accurate conclusion, more statistical analyses needed to be made.
+
+```{r eda_interview, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+ggplot(aes(y = interviewer_rating_2, x = interviewer_rating_1, color = gender), data = allphase) + 
+  geom_point() +
+  theme_minimal() +
+  labs(title = "Males' and Females' Interview Ratings in Phase 3",
+   x = "Interviewer Rating 1",
+   y = "Interviewer Rating 2") + 
+  theme(legend.title = element_blank(), plot.title = element_text(hjust = 0.5)) +
+scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+
+ggplot(aes(x = interviewer_rating_1, fill = gender), data = allphase) + 
+  geom_histogram(binwidth = 10) + 
+  theme_minimal() +
+  labs(title = "Males' and Females' Interview Ratings 1 in Phase 3",
+     x = "Score",
+     y = "Count") + 
+  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggplot(aes(x = interviewer_rating_1, color = gender), data = allphase) + 
+  geom_freqpoly(binwidth = 10) + 
+  theme_minimal() +
+  labs(title = "Males' and Females' Interview Ratings 1 in Phase 3",
+     x = "Score",
+     y = "Count") + 
+  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggplot(aes(x = interviewer_rating_2, fill = gender), data = allphase) + 
+  geom_histogram(binwidth = 10) + 
+  theme_minimal() +
+  labs(title = "Males' and Females' Interview Ratings 2 in Phase 3",
+   x = "Score",
+   y = "Count") + 
+  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+  scale_fill_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+ggplot(aes(x = interviewer_rating_2, color = gender), data = allphase) + 
+  geom_freqpoly(binwidth = 10) + 
+  theme_minimal() +
+  labs(title = "Males' and Females' Interview Ratings 2 in Phase 3",
+     x = "Score",
+     y = "Count") + 
+  theme(legend.title = element_blank(), legend.position = c(.15, .8), plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(values = c("Man" = "#003F5C", "Woman" = "#86BCB6", "Prefer not to say" = "#B9CA5D"))
+```
+
+### Modeling:
+In the process of modeling the hiring data, we first built a **generalized linear model(GLM)** with **all variables** included in the data set.\
+
+**m1_all_factors <- glm(result ~ gender + team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)** 
+
+We checked the summary of the model(m1) to see which factors are significant.
+
+And we changed the simple m1, we included only **significant factors** to form the new model.\
+**m1_only_sig_factors <- glm(result ~ gender + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)**\ 
+
+After conduct AIC, we decided to chose the old m1, so we do not omit other insignificant variables
+
+the chosen model:
+
+**m1_all_factors <- glm(result ~ gender + team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)**
+```{r hiring_phase1 v0, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# pass_phase1
+# first fit a generalized linear model (GLM) with all variables in the dataset 
+# pass_phase1 we generated, which has data about if someone passes phase 1 of
+# AI recruitment pipeline
+m1_all_factors <- glm(result ~ gender + team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)
+# summarize the model to see which factors are significant
+summary(m1_all_factors)
+# now include only significant factors from the complete model
+m1_only_sig_factors <- glm(result ~ gender + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)
+summary(m1_only_sig_factors)
+# w. r. t. AIC of two models, we prefer the complex one
+# null hypothesis rejected, complex model preferred
+# so we do not omit other insignificant variables
+lrtest(m1_only_sig_factors, m1_all_factors)
+m1 = m1_all_factors
+```
+
+We then tried to use the **generalized linear mixed model (GLMM)**, use **team** as the **grouping unit**, the new model is:\
+
+m1_grouping <- glmer(result ~ gender + cover_letter + cv + gpa + extracurriculars + work_experience + (1 | team_applied_for), family=binomial(link=logit), data=pass_phase1)\
+we checked the model's information, the significant variables are the same as GLM version, except gender, so we fit a new GLMM by omitting all insignificant variables of the last model, except gender:\
+
+**m1_grouping_onlysig <- glmer(result ~ gender + gpa + extracurriculars + work_experience + (1 | team_applied_for), family=binomial(link=logit), data=pass_phase1)**\
+We ran AIC and BIC and Irtest, based on the results of AIC, BIC and lrtest, we choose one including all parameters 
+
+```{r hiring_phase1 v1, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# now we try to use the generalized linear mixed model (GLMM), use team as the grouping unit
+m1_grouping <- glmer(result ~ gender + cover_letter + cv + gpa + extracurriculars + work_experience + (1 | team_applied_for), family=binomial(link=logit), data=pass_phase1)
+# check the model information, the significant variables are the same as GLM version, except gender
+summary(m1_grouping)
+# fit a GLMM by omitting all insignificant variables of the last model, except gender
+m1_grouping_onlysig <- glmer(result ~ gender + gpa + extracurriculars + work_experience + (1 | team_applied_for), family=binomial(link=logit), data=pass_phase1)
+summary(m1_grouping_onlysig)
+# based on AIC, BIC and lrtest result, we choose one including all parameters
+lrtest(m1_grouping_onlysig, m1_grouping)
+```
+GLM for phase 1:
+AIC = 49.551, BIC = 84.754
+GLMM for phase 1:
+AIC = 50.9, BIC = 86.1
+m1 (GLM) is preferred because of slightly less AIC, BIC
+we fitted a new model without gender, and we try to remove gender since it is insignificant\
+
+**model_phase1_no_gender <- glm(result ~ team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)**\
+test result: AIC and BIC of models without gender are lower
+so model without gender is better w.r.t AIC & BIC
+Likelihood Ratio Test: null hypothesis cannot be rejected, reduced model preferred
+In this case,  we should use model without gender
+
+```{r hiring_phase1 v1.2, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# GLM for phase 1:
+# AIC = 49.551, BIC = 84.754
+# GLMM for phase 1:
+# AIC = 50.9, BIC = 86.1
+# m1 (GLM) is preferred for slightly less AIC, BIC
+BIC(m1)
+# fit a new model without gender, we try to remove gender since it is insignificant
+model_phase1_no_gender <- glm(result ~ team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience, family=binomial(link=logit), data=pass_phase1)
+# find info of this model, including AIC and BIC
+# AIC = 48.753, BIC = 79.555
+summary(model_phase1_no_gender)
+BIC(model_phase1_no_gender)
+# test result: AIC and BIC of models without gender are lower
+# so model without gender is better w.r.t AIC & BIC
+# Likelihood Ratio Test: null hypothesis cannot be rejected, reduced model preferred
+# so we should use model without gender
+lrtest(model_phase1_no_gender, m1)
+model_phase1_final = model_phase1_no_gender
+```
+
+```{r hiring_phase1 summary, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# summarize the final phase 1 model
+# based on the test result above, gender does not impact phase1 result
+summary(model_phase1_final)
+```
+
+### Modeling to check the gender fairness in hiring process phase 2:
+first fit a **generalized linear model (GLM)** with all variables in the dataset : \
+**m2_all_factors <- glm(result ~ gender + technical_skills + writing_skills + speaking_skills + leadership_presence, family=binomial(link=logit), data=pass_phase2)**\
+summarise the model to see which factors are significant: 
+```{r}
+effects <- matrix(c("  0.43291", "6.76e-05", "0.00011", " 2.01e-05", "1.17e-05"),
+ncol=1, byrow=TRUE)
+colnames(effects) <- c("Pr(>|z|)")
+rownames(effects) <- c("gender", "technical_skills","writing_skills", "speaking_skills", "leadership_presence")
+effects <- as.table(effects)
+effects
+
+
+```
+all factors are significant except for gender.
+
+```{r hiring_phase2 v0, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# pass_phase2
+# first fit a generalized linear model (GLM) with all variables in the dataset 
+# pass_phase2 we genrated, which has data about if someone passes phase 2 of
+# AI recuitment pipeline
+m2_all_factors <- glm(result ~ gender + technical_skills + writing_skills + speaking_skills + leadership_presence, family=binomial(link=logit), data=pass_phase2)
+# summarise the model to see which factors are significant
+# result: all factors are significant except for gender
+summary(m2_all_factors)
+m2 = m2_all_factors
+BIC(m2)
+```
+In this case, we decided to fit a new model, same as m2 just omit gender as it is not significant. \
+**m2_no_gender <- glm(result ~ technical_skills + writing_skills + speaking_skills + leadership_presence, family=binomial(link=logit), data=pass_phase2)**
+get the info of the model
+m2_no_gender:
+AIC = 79.877, BIC = 98.34566
+**m2**:
+AIC = 81.247, BIC = 103.4098
+the reduced model has lower slightly AIC and BIC
+Therefore, **m2_no_gender** is preferred w.r.t. AIC & BIC
+
+```{r hiring_phase2 v1, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# fit a new model for phase 2
+# every parameters are the same as m2_all_factors except for omitting gender
+m2_no_gender <- glm(result ~ technical_skills + writing_skills + speaking_skills + leadership_presence, family=binomial(link=logit), data=pass_phase2)
+# get the info of the model
+# m2_no_gender:
+# AIC = 79.877, BIC = 98.34566
+# m2:
+# AIC = 81.247, BIC = 103.4098
+# the reduced model has lower slightly AIC and BIC
+# so m2_no_gender is preferred w.r.t. AIC & BIC
+BIC(m2_no_gender)
+summary(m2_no_gender)
+# test result: the null hypothesis cannot be rejected
+# so we prefer to use the reduced model (gender is not needed)
+lrtest(m2_no_gender, m2)
+model_phase2_final = m2_no_gender
+```
+And As we check the summary of the final model of phase 2, 
+
+based on the test result above, gender does not impact phase2 result
+```{r hiring_phase2 summary, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# summarize the final phase 2 model
+# based on the test result above, gender does not impact phase2 result
+summary(model_phase2_final)
+```
+
+
+### Phase 3
+
+```{r hiring_phase3 v0, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# pass_phase3
+# first fit a generalized linear model (GLM) with all variables in the dataset 
+# pass_final we genrated, which has data about if someone passes phase 3 of
+# AI recuitment pipeline and finally get hired
+m3_all_factors <- glm(result ~ gender + interviewer_rating_1 + interviewer_rating_2, family=binomial(link=logit), data=pass_final)
+# summarise the model to see which factors are significant
+# result: all factors are significant except for gender
+summary(m3_all_factors)
+m3 = m3_all_factors
+BIC(m3)
+```
+
+
+```{r hiring_phase3 v1, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# fit a new model for phase 3
+# every parameters are the same as m3_all_factors except for omitting gender
+#m3_no_gender <- glm(result ~ interviewer_rating_1 + interviewer_rating_2, family=binomial(link=logit), data=pass_final)
+# get the info of the model
+# m3_no_gender:
+# AIC = 6, BIC = 9.273127
+# m3:
+# AIC = 8, BIC = 12.36417
+# the reduced model has lower slightly AIC and BIC
+# so m3_no_gender is preferred w.r.t. AIC & BIC
+#IC(m3_no_gender)
+#summary(m3_no_gender)
+# test result: the null hypothesis cannot be rejected
+# so we prefer to use the reduced model (gender is not needed)
+#lrtest(m3_no_gender, m3)
+#model_phase3_final = m3_no_gender
+```
+
+
+```{r hiring_phase3 summary, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# summarize the final phase 3 model
+# based on the test result above, gender does not impact phase3 result
+#summary(model_phase3_final)
+```
+
+
+```{r all variables1, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+# we combine all parameters from all phases together to see if gender impacts the final result
+# NOTE: do not use this model for predicting the result through all phases, since if a candidate
+# cannot pass one phase, then he will have no values for variables from next phases (so the value is NA)
+# first let's fit a GLM
+allphase = allphase %>%
+  mutate(if_hired = ifelse(status=="hired", 1, 0))
+all_m3 = glm(if_hired ~ gender + team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience + technical_skills + writing_skills + speaking_skills + leadership_presence + interviewer_rating_1 + interviewer_rating_2, family=binomial(link=logit), data=allphase)
+all_m3_no_gender = glm(if_hired ~ team_applied_for + cover_letter + cv + gpa + extracurriculars + work_experience + technical_skills + writing_skills + speaking_skills + leadership_presence + interviewer_rating_1 + interviewer_rating_2, family=binomial(link=logit), data=allphase)
+summary(all_m3)
+summary(all_m3_no_gender)
+# test result: null hypothesis cannot be rejected, so reduced model is preferred
+# gender does not impact
+# based on the p-value (1), the reduced model is strongly preferred indeed
+lrtest(all_m3_no_gender, all_m3)
+```
+
+
+
+
+## Discussion
+
+_In this section you will summarize your findings across all the research questions and discuss the strengths and limitations of your work. It doesn't have to be long, but keep in mind that often people will just skim the intro and the discussion of a document like this, so make sure it is useful as a semi-standalone section (doesn't have to be completely standalone like the executive summary)._
+
+### Strengths and limitations
+#### Strengths:
+
+
+#### Limitations:
+
+A limitation of this analysis is that we used  the data from the current existing employees when we analyze the promotion and salary fairness. And only applying the current employee's data may have introduced bias into our models. Because we did not know the resignation rate and dismissal rate since we can only have the data that is provided. A possibility is that employees who met strong gender biases would withdraw themselves out of the position, or just got dismissed. In this case, even if we tried our best in dueling with the provided data, our conclusion still could be biased since the data has been biased already. In order to make further adjustment or investigation, more data should be required, including the data of resigned employees and dismissed employees.
+
+Another limitation may result from modeling. we have to admit that our team felt restricted by the limited knowledge and perception of ourselves. In order to get an accurate and reliable conclusion to answer our research questions, we have to choose those statistical methods and models that we understand most and use most frequently. However, this might not be perfect for all situations. And some of our findings were not fully explained and expressed by our current models. To explain more about the data and those findings, other useful models and statistical tools should be introduced into this research.
+
+
+\newpage
+# Consultant information
+## Consultant profiles
+
+**Fuyuan Jiang**. Fuyuan is a senior consultant with Consulting Expert. He specializes in data visualization and data storing. Fuyuan earned his Bachelor of Science, Major in Statistics and Human Health, from the University of Toronto in 2021.
+
+**Jiakai Shi** Jiakai is a senior consultant with Consulting Expert. He specializes in data storing and model building. Jiakai earned his Bachelor of Science, Major in Statistics and specialist in computer science, from the University of Toronto in 2022.
+
+**Jie Huang** Jie is a junior consultant with Consulting Expert. She specializes in statistical communication and report layout. Jie earned her Bachelor of Science, Major in Statistics and Mathematics, from the University of Toronto in 2022.
+
+**Junming Zhang** Junming is a senior consultant with Consulting Expert. He specializes in software coding and machine learning. Junming earned his Bachelor of Science, Major in Statistics and specialist in computer science, from the University of Toronto in 2021.
+
+
+**Wenqing Cao**. Wenqing Cao is a junior consultant with Consulting Experts. She specializes in reproducible analysis and statistical communication. Wenqing Cao earned the Bachelor of Science,  Major in Statistics and Mathematics and Specialist in Computer Science from the University of Toronto in 2022.
+
+
+
+## Code of ethical conduct
+
+For this collaboration with Black Saber Software, we are committed to:
+
+a.	To the extent possible, provide the client with a choice among valid alternative statistical methods that may vary in scope, cost, or precision.
+b.	Make every effort to explain any anticipated adverse consequences of failing to follow an agreed-upon sampling or analysis plan. 
+c.	Apply statistical sampling and analysis procedures scientifically without predetermining the results. 
+d.	Strives to make new statistical knowledge widely available for the benefit of society as a whole and beyond his/her own application. 
+e.	Understands and complies with confidentiality requirements for data collection, release, and distribution, as well as restrictions on the use of data-by-data providers (to the extent required by law), and thus protects the use and disclosure of data accordingly Protect privileged information of employers, customers, or contributors.
+
+
+
+
+
+
+
+

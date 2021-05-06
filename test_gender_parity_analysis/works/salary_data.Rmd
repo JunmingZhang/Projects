@@ -1,0 +1,106 @@
+---
+title: "Consulting Report of testing gender parity in Black Saber Software"
+subtitle: "Testing Gender parity existence in the processes of hiring, wages, and promotion"
+author: "Report prepared for Black Saber Software by Consulting Expert"
+date: 2021-04-21
+lang: "en"
+output:
+  pdf_document:
+    template: report.tex
+    toc: true
+    toc_depth: 2
+titlepage: true
+titlepage-color: "6C3082"
+titlepage-text-color: "FFFFFF"
+titlepage-rule-color: "FFFFFF"
+titlepage-rule-height: 2
+---
+
+```{r, message = FALSE, echo=FALSE}
+library(tidyverse)
+# this should supress all code and messages
+knitr::opts_chunk$set(echo = FALSE, include = TRUE, message = FALSE,warnings=FALSE, fig.width = 14, fig.height = 9)
+```
+
+```{r data, echo=FALSE, include=FALSE}
+black_saber_current_employees <- read_csv("./data/black-saber-current-employees.csv")
+final_hire<- read_csv("./data/final-hires-newgrad_2020.csv")
+phase1 <-read_csv("./data/phase1-new-grad-applicants-2020.csv") 
+phase2 <-read_csv("./data/phase2-new-grad-applicants-2020.csv") 
+phase3 <-read_csv("./data/phase3-new-grad-applicants-2020.csv")
+```
+
+\newpage
+# Executive summary
+
+Dear all members of the Black Saber Software board of director, 
+Thanks for inviting Consulting Experts to participate in this potential gender parity investigation of Black Saber Software. Here, Consulting Expert will promise the legal responsibility for the truth and accuracy of what we say in this summary. And we will promise the legal responsibility of the safety of your provided data of your current employees.    
+As what we have been told previously, our investigation will be mainly focusing on testing the fairness of the sections of hiring, salary and position promotion.
+
+* In the provided data, we found that salary was calculated non-accumulated. And we decided to make some further manipulation with it and make it related to gender to see if there were some evidence to help us conclude the existence of the gender bias in the salary distribution. Besides, since each individual's salary is highly related to the overall situation will their work teams, we considered increasing the weight of comparing the salary difference within each team more than just reaching the difference between each individual. And after we have done all the testings, we can confidently conclude gender parity in the salary distribution among most of the work teams. Besides, gender bias commonly existed in most positions, from an entry-level position to a high-level management position.
+
+* To test if there is gender parity in the promotion process of Black Saber Software, we calculated the service years of every current employees. After we find the years of service for each individual, we make a few steps of analysis. We found that gender is one of the most influential factors among all possible factors that might influence the promotion of employees. 
+
+* As the email informed, the processes of hiring of Black Saber Software contains three rounds, and the first two rounds are application qualification checks which are highly relied on AI screening; and since the last round of hiring is made of real person interviews which checked by real interviewers, AI does not have any chance to made any decision on the third round of hiring process. In this case, we decided to focus more on the first two rounds of the hiring process, to test if the training AI have any potential selection biases due to the gender difference of job applicants. From our analysis of your provided data in the processes, we can conclude that AI have no gender preference in the first two rounds of hiring pipeline, and we have no evidence to say that AI has gender biases. The third round of hiring process is made by interviewers and it is also gender parity free.
+
+And in our final statement of this investigation, we will conclude that hiring process is gender parity free, but gender bias appears in promotion decisions and salary distributions in Black Saber Software.
+
+\newpage
+# Technical report
+
+## Introduction
+
+This statistical report is requested by Black Saber Software and provided by Consulting Expert as the result of an investigation of the gender parity issue towards Black Saber Software.
+
+This investigation is mainly focused on the gender issue checks on three main areas of Black Saber Software: hiring pipeline, salary decision, promotion qualification.
+
+All used data were provided and authorized by Black Saber Software, and all the data were collected from the current employees of Black Saber Software. Since the prepared data contains many factors that might influence the conclusion of our investigation, in this case, we took many complicated data manipulation and sorting before modeling and plotting. Besides, only considering the direct relationship between gender and those three processes could be highly biased towards our conclusion, to due with this issue, we also took many other factors inside our considerations. To make a more precise logic flow for this investigation, we made three major testable and measurable hypotheses, and all statistical analyses were made around those three hypotheses.
+
+After all, we have found the evidence to answer the questions that Black Saber Software asked previously. And Consulting Expert has cleaned all the data used in this investigation from our devices with zero backups to keep our data safety promises. All three significant questions and answers of them will be demonstrated in this report detailly.
+
+### Research questions
+We have three major concerns in this investigation: \
+
+
+* If gender an influential factor involves in Black Saber Software's salary decision ?\
+ 
+* If gender an influential factor involves in Black Saber Software's position promotion ?\
+
+* If gender an influential factor involves in each phase of the hiring pipeline of Black Saber Software ?\
+
+```{r eda_current_employees, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+black_saber_current_employees <- read_csv("data/black-saber-current-employees.csv")
+current_employees <- black_saber_current_employees %>%
+  filter(financial_q == "2020 Q4") %>%
+  mutate(salary = gsub("\\$", "", salary)) %>%
+  mutate(salary = gsub("\\,", "", salary)) %>%
+  mutate(salary = as.numeric(salary)) %>%
+  mutate(employee_id = as.character(employee_id)) %>%
+  mutate(gender = as.factor(gender)) %>%
+  mutate(team = as.factor(team)) %>%
+  mutate(role_seniority = as.factor(role_seniority)) %>%
+  mutate(role_seniority = fct_relevel(role_seniority, "Director",  after=7)) %>%
+  mutate(leadership_for_level = as.factor(leadership_for_level)) %>%
+  mutate(gender = factor(gender, levels = c("Man", "Woman", "Prefer not to say"))) %>%
+  filter(gender != "Prefer not to say")
+```
+## Based on the salary data of the latest quarter (Q4, 2020), is gender an important factor?
+We consider the employees in financial quarter 4 in 2020 as the current employees. Before analyzing the relationship between salary and gender in current employees, we need to consider if there exist other variables that affect employees' salaries, such as productivity, team, etc. We will demonstrate our analysis about variables that affect employees' salary in data visualization, prior to the modeling.
+
+#### Data Visualization:
+
+To give an overview of the real situation in the salary data, we built up a salary boxplot that can make a comparison by two gender types in this plot (Males and Females). From Figure 1.1, we surprisingly found a gap in the salary when we classify the data by gender. We could observe that the average salary of male employees is about \$40000, and the average salary of female employees is much less than \$40000. Also, some outliers are gathering around \$150000, \$120000, and \$70000 in two boxplots, which means that employees would have different levels of salary and the majority would have salary around \$40000.
+
+## [salcompare.png]
+
+In Figures 1.2 and 1.3, we could observe the difference of males' and females' salaries in different teams and role seniority. From Figure 1.2, the average salary of employees in each mean is similar, which is around \$40000. But we could observe that males' salaries are higher than females' in most of the teams, such as in Data, Design, Operations, etc. And in Figure 1.3, we grouped the data by the role seniority and we observed that the average salary is increasing from Entry-level up to Vice president. The boxplots in Figures also show that generally speaking, men earn a little more than women in every role seniority. Thus, we could consider the team and role seniority variables are random effects in our model.
+
+## [salteam.png]
+
+## [salrole.png]
+
+From Figure 1.4, we notice that people who exceed expectations are all males and people who need improvement are all females. So we need to explore whether salary depends on gender. If the salary does not depend on gender, then this result is caused by the situation that females spend more time on family issues (pregnancy, etc.) rather than on tasks in the company. Thus it could explain why we observe only females need improvement and lower salary. Thus, we need to treat the productivity and leadership for level variables as the fixed effects in our model.
+
+## [levleader.png]
+
+We highly doubt the gender fairness of making salary decisions in Black Saber Software to combine all the features we observed from data plotting. We will build **linear mixed models** on describing the relationship between salary and gender, and other fixed/random effects we discussed earlier to determine whether gender is a significant variable to employees' salaries.
