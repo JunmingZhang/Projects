@@ -1,0 +1,134 @@
+/* basic settings of this library  */
+
+.slide_frame {
+    margin: 50px;
+}
+
+.slide_box {
+    margin: auto;
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+    background-size: 800px 600px;
+    background-color: rgb(210, 229, 247);
+}
+
+.slide {
+    background-color: aliceblue;
+    height: 600px;
+    width: 800px;
+    /* position: relative; */
+}
+
+.pagenumber {
+    display: block;
+    position: absolute;
+    color: black;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 12px;
+    margin: 0px;
+    z-index: 10;
+}
+
+.caption_box {
+    display: flex;
+    flex: auto;
+    /* margin-top: 10px;
+    margin-left: 50%;
+    margin-right: 50%;
+    margin-bottom: 10px; */
+    margin: 10px 50%;
+    text-align: center;
+}
+
+.caption {
+    color: black;
+    font-size: 20px;
+    font-weight: bolder;
+    font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+}
+
+.button_box {
+    /* margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px; */
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 52%;
+    margin-right: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.my_button {
+    display: inline-block;
+    color: rgb(127, 197, 255);
+    background-color: lightcyan;
+
+    width: fit-content;
+    white-space: nowrap;
+
+    border: 2px solid cornflowerblue;
+    border-radius: 12px;
+    outline: none;
+
+    padding: 20px 40px;
+    margin: 15px;
+
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: all .2s ease-in-out;
+
+    font-weight: bold;
+    font-family: Comic Sans MS, Comic Sans, cursive;
+}
+
+.my_button:hover {
+    color:rgb(60, 163, 248);
+    border: 2px solid lightblue;
+    background-color: rgb(240, 250, 250);
+    box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.12)
+}
+
+.dots_box {
+    /* margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px; */
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+}
+
+.my_dot {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+
+    display: inline-block;
+    background-color: lightgrey;
+    margin: 10px;
+
+    border: none;
+    outline: none;
+
+    transition: all .5s ease-Out;
+
+    cursor: pointer;
+}
+
+.my_dot:hover {
+    background-color: grey;
+}
+
+.my_dot.dot_active {
+    background-color: grey;
+    background-image: url("activeDot/pacman3.jpeg");
+    background-size: 20px;
+}

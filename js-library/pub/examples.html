@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" type="text/css" href="examples.css">
+   <link rel="stylesheet" type="text/css" href="JSlide_properties.css">
+   <link rel="stylesheet" type="text/css" href="JSlide_animation.css">
+   <link rel="stylesheet" type="text/css" href="JSlide_filter.css">
+    
+   <title>JSlide</title>
+
+   <script type="text/javascript" src='JSlide.js'></script>
+   <script defer type="text/javascript" src='examples.js'></script>
+</head>
+<body>
+
+   <h1 class="header">
+      <span class="title"> JSlide.js </span>
+      <span class="subtitle"> A library to play slides online! </span>
+   </h1>
+
+   <div class="topNavBar">
+      <button id="api" class="nav_button"> API documentation </button>
+      <button id="repo" class="nav_button">
+         <div class="translate"></div>
+         Fork me!
+      </button>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 1 </h3>
+      <p class="example_description"> In the first example, we play a raw slides show, that is, you can play the slides by clicking the slide.</p>
+
+      <div class="slide_frame" id="first_example">
+         <div class="slide_box">
+            <!-- <div class="pagenumber">
+               <span> 1 </span> <span> /4 </span>
+            </div> -->
+            <img src="pictures/xi_an.jpg" alt="xi'an.jpg" class="slide">
+            <img src="pictures/beijing.jpg" alt="beijing.jpg" class="slide">
+            <img src="pictures/nanjing.jpg" alt="nanjing.jpg" class="slide">
+            <img src="pictures/hangzhou.jpg" alt="hangzhou.jpg" class="slide">
+            <img src="pictures/wuhan.jpg" alt="wuhan.jpg" class="slide">
+            <img src="pictures/wuhan2.jpg" alt="wuhan2.jpg" class="slide">
+            <img src="pictures/luoyang.jpg" alt="luoyang.jpg" class="slide">
+            <img src="pictures/dunhuang.jpg" alt="dunhuang.jpg" class="slide">
+         </div>
+         <!-- <div class="caption_box">
+            <span class="caption"> this </span>
+         </div> -->
+      </div>
+      <div class="show_code_bar">
+         <button class="code_button" id="ex1_html_button">HTML</button>
+         <button class="code_button" id="ex1_css_button">CSS</button>
+         <button class="code_button" id="ex1_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex1_html">
+            <code>
+         &lt;div class="slide_frame" id="first_example"&gt;
+            &lt;div class="slide_box"&gt;
+            &lt;img src="pictures/xi_an.jpg" alt="xi'an.jpg" class="slide"&gt;
+            &lt;img src="pictures/beijing.jpg" alt="beijing.jpg" class="slide"&gt;
+            &lt;img src="pictures/nanjing.jpg" alt="nanjing.jpg" class="slide"&gt;
+            &lt;img src="pictures/hangzhou.jpg" alt="hangzhou.jpg" class="slide"&gt;
+            &lt;img src="pictures/wuhan.jpg" alt="wuhan.jpg" class="slide"&gt;
+            &lt;img src="pictures/wuhan2.jpg" alt="wuhan2.jpg" class="slide"&gt;
+            &lt;img src="pictures/luoyang.jpg" alt="luoyang.jpg" class="slide"&gt;
+            &lt;img src="pictures/dunhuang.jpg" alt="dunhuang.jpg" class="slide"&gt;
+            &lt;/div&gt;
+         &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex1_css" class="code_hidden">
+            <code>
+            .slide_frame {
+                  margin: 50px;
+              }
+              
+              .slide_box {
+                  margin: auto;
+                  width: 800px;
+                  height: 600px;
+                  overflow: hidden;
+                  background-size: 800px 600px;
+                  background-color: rgb(210, 229, 247);
+              }
+              
+              .slide {
+                  background-color: aliceblue;
+                  height: 600px;
+                  width: 800px;
+              }
+              
+              .pagenumber {
+                  display: block;
+                  position: absolute;
+                  color: black;
+                  font-size: 15px;
+                  font-weight: bold;
+                  padding: 12px;
+                  margin: 0px;
+                  z-index: 10;
+              }
+              
+              .caption_box {
+                  display: flex;
+                  flex: auto;
+                  margin: 10px 50%;
+                  text-align: center;
+              }
+              
+              .caption {
+                  color: black;
+                  font-size: 20px;
+                  font-weight: bold;
+                  font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+              }
+            </code>
+         </pre>
+
+         <pre id="ex1_js" class="code_hidden">
+            <code>
+            example1 = new JSlide()
+            example1.link()
+            example1.selectDisplayArea("#first_example", "slide_box", "slide", "flex")
+            example1.load_pictures()
+            example1.showSlides()
+            example1.setShowPageNumber(true, "pagenumber")
+            example1.setShowCaption(true, "caption_box", "caption")
+            example1.setClickable(true)
+            example1.addCaption(captions)
+            example1.addPageNumber()
+            example1.showSlidesByClick()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 2 </h3>
+      <p class="example_description"> In the first example, I will add button to play the slides, and show functions which create slides box like above.
+         In this example, I provide a way to load images from the given path and build the slide box rather than hard coded the image in
+         and write the slide box explicitly in HTML.
+      </p>
+
+      <div class="slide_frame" id="second_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex2_html_button">HTML</button>
+         <button class="code_button" id="ex2_css_button">CSS</button>
+         <button class="code_button" id="ex2_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex2_html">
+            <code>
+            &lt;div class="slide_frame" id="second_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex2_css" class="code_hidden">
+            <code>
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .button_box {
+               margin-top: 10px;
+               margin-bottom: 10px;
+               margin-left: 52%;
+               margin-right: 50%;
+               display: flex;
+               justify-content: center;
+           }
+           
+            .my_button {
+               display: inline-block;
+               color: rgb(127, 197, 255);
+               background-color: lightcyan;
+            
+               width: fit-content;
+               white-space: nowrap;
+            
+               border: none;
+               border-radius: 12px;
+               outline: none;
+            
+               padding: 20px 40px;
+               margin: 15px;
+            
+               text-align: center;
+               text-decoration: none;
+               font-size: 20px;
+            
+               cursor: pointer;
+            
+               transition: all .2s ease-in-out;
+            
+               font-weight: bold;
+               font-family: Comic Sans MS, Comic Sans, cursive;
+            }
+            
+            .my_button:hover {
+               color:rgb(60, 163, 248);
+               background-color: rgb(240, 250, 250);
+               box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.12)
+            }
+            </code>
+         </pre>
+
+         <pre id="ex2_js" class="code_hidden">
+            <code>
+            example2 = new JSlide()
+            example2.link()
+            example2.selectDisplayArea("#second_example", "slide_box", "slide", "flex")
+            example2.buildSlideBox()
+            example2.upload_pictures(image_path)
+            example2.load_pictures()
+            example2.setClickable(true)
+            example2.setShowCaption(true, "caption_box", "caption")
+            example2.setButton(true, "button_box", "my_button")
+            example2.showSlides()
+            example2.showSlidesByClick()
+            example2.addCaption(captions)
+            example2.showSlidesByButtonClick()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 3 </h3>
+      <p class="example_description"> In the third example, I will select slides page by dots, we can hover on one dot to preview a slide.</p>
+
+      <div class="slide_frame" id="third_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex3_html_button">HTML</button>
+         <button class="code_button" id="ex3_css_button">CSS</button>
+         <button class="code_button" id="ex3_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex3_html">
+            <code>
+            &lt;div class="slide_frame" id="third_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex3_css" class="code_hidden">
+            <code>
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .dots_box {
+               margin: 10px auto;
+               display: flex;
+               justify-content: center;
+            }
+            
+            .my_dot {
+               border-radius: 50%;
+               width: 20px;
+               height: 20px;
+            
+               display: inline-block;
+               background-color: lightgrey;
+               margin: 10px;
+            
+               border: none;
+               outline: none;
+            
+               transition: all .5s ease-Out;
+            }
+            
+            .my_dot:hover {
+               background-color: grey;
+            }
+            
+            .my_dot.dot_active {
+               background-color: grey;
+               background-image: url("activeDot/pacman3.jpeg");
+               background-size: 20px;
+            }
+            </code>
+         </pre>
+
+         <pre id="ex3_js" class="code_hidden">
+            <code>
+            example3 = new JSlide()
+            example3.link()
+            example3.selectDisplayArea("#third_example", "slide_box", "slide", "flex")
+            example3.buildSlideBox()
+            example3.upload_pictures(image_path)
+            example3.load_pictures()
+            example3.setShowCaption(true, "caption_box", "caption")
+            example3.setShowPageNumber(true, "pagenumber")
+            example3.setHoverable(true)
+            example3.setDots(true, "dots_box", "my_dot", "dot_active")
+            example3.setClickable(true)
+            example3.showSlides()
+            example3.addCaption(captions)
+            example3.addPageNumber()
+            example3.showSlidesByDotClick()
+            example3.showSlidesByClick()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 4 </h3>
+      <p class="example_description"> In the fourth example, we can play slides automatically. You can hover on the slide to pause the slide,
+         and once you move your mouse off to re-start. To disable hovering, you can click or double click to lock and unlock hovering. click the
+         slide so to pause the slide permenantly, and double click the slide so to play the slide automatically permenantly, unless you unlock
+         the slide by clicking or double clicking again. Although, you need to enable hovering, clicking and double clicking at first.</p>
+
+      <div class="slide_frame" id="fourth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex4_html_button">HTML</button>
+         <button class="code_button" id="ex4_css_button">CSS</button>
+         <button class="code_button" id="ex4_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex4_html">
+            <code>
+            &lt;div class="slide_frame" id="fourth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex4_css" class="code_hidden">
+            <code>
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+            </code>
+         </pre>
+
+         <pre id="ex4_js" class="code_hidden">
+            <code>
+            example4 = new JSlide()
+            example4.link()
+            example4.selectDisplayArea("#fourth_example", "slide_box", "slide", "flex")
+            example4.buildSlideBox()
+            example4.upload_pictures(image_path)
+            example4.load_pictures()
+            example4.setAuto(true)
+            example4.setSpeed(2)
+            example4.setHoverable(true)
+            example4.setClickable(true)
+            example4.setDblclickable(true)
+            example4.setShowCaption(true, "caption_box", "caption")
+            example4.setShowPageNumber(true, "pagenumber")
+            example4.showSlides()
+            example4.addCaption(captions)
+            example4.addPageNumber()
+            example4.showSlidesAutomatically()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 5 </h3>
+      <p class="example_description"> In the fifth example, I will enable a button for pausing or running permenantly rather than clicking the slide.
+         You can unlock by clicking either button again. I will also show playing slides in reverse order. </p>
+
+      <div class="slide_frame" id="fifth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex5_html_button">HTML</button>
+         <button class="code_button" id="ex5_css_button">CSS</button>
+         <button class="code_button" id="ex5_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex5_html">
+            <code>
+            &lt;div class="slide_frame" id="fifth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex5_css" class="code_hidden">
+            <code>
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .button_box {
+               margin-top: 10px;
+               margin-bottom: 10px;
+               margin-left: 52%;
+               margin-right: 50%;
+               display: flex;
+               justify-content: center;
+            }
+           
+            .my_button {
+               display: inline-block;
+               color: rgb(127, 197, 255);
+               background-color: lightcyan;
+           
+               width: fit-content;
+               white-space: nowrap;
+           
+               border: 2px solid cornflowerblue;
+               border-radius: 12px;
+               outline: none;
+           
+               padding: 20px 40px;
+               margin: 15px;
+           
+               text-align: center;
+               text-decoration: none;
+               font-size: 20px;
+           
+               cursor: pointer;
+           
+               transition: all .2s ease-in-out;
+           
+               font-weight: bold;
+               font-family: Comic Sans MS, Comic Sans, cursive;
+            }
+           
+            .my_button:hover {
+               color:rgb(60, 163, 248);
+               border: 2px solid lightblue;
+               background-color: rgb(240, 250, 250);
+               box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.12)
+            }
+            </code>
+         </pre>
+
+         <pre id="ex5_js" class="code_hidden">
+            <code>
+            example5 = new JSlide()
+            example5.link()
+            example5.selectDisplayArea("#fifth_example", "slide_box", "slide", "flex")
+            example5.buildSlideBox()
+            example5.upload_pictures(image_path)
+            example5.load_pictures()
+            example5.setShowCaption(true, "caption_box", "caption")
+            example5.setShowPageNumber(true, "pagenumber")
+            example5.setAuto(true)
+            example5.setReverse(true)
+            example5.setHoverable(true)
+            example5.setSpeed(1.5)
+            example5.setButton(true, "button_box", "my_button")
+            example5.showSlides()
+            example5.addCaption(captions)
+            example5.addPageNumber()
+            example5.showSlidesAutomatically()
+            example5.showSlidesByButtonClickAuto()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 6 </h3>
+      <p class="example_description"> In the sixth example, I will enable dots for automatically playing. </p>
+
+      <div class="slide_frame" id="sixth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex6_html_button">HTML</button>
+         <button class="code_button" id="ex6_css_button">CSS</button>
+         <button class="code_button" id="ex6_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex6_html">
+            <code>
+            &lt;div class="slide_frame" id="sixth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex6_css" class="code_hidden">
+            <code>
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .dots_box {
+               margin: 10px auto;
+               display: flex;
+               justify-content: center;
+            }
+           
+            .my_dot {
+               border-radius: 50%;
+               width: 20px;
+               height: 20px;
+         
+               display: inline-block;
+               background-color: lightgrey;
+               margin: 10px;
+         
+               border: none;
+               outline: none;
+         
+               transition: all .5s ease-Out;
+            }
+           
+            .my_dot:hover {
+               background-color: grey;
+            }
+           
+            .my_dot.dot_active {
+               background-color: grey;
+               background-image: url("activeDot/pacman3.jpeg");
+               background-size: 20px;
+            }
+            </code>
+         </pre>
+
+         <pre id="ex6_js" class="code_hidden">
+            <code>
+            example6 = new JSlide()
+            example6.link()
+            example6.selectDisplayArea("#sixth_example", "slide_box", "slide", "flex")
+            example6.buildSlideBox()
+            example6.upload_pictures(image_path)
+            example6.load_pictures()
+            example6.setShowCaption(true, "caption_box", "caption")
+            example6.setShowPageNumber(true, "pagenumber")
+            example6.setAuto(true)
+            example6.setHoverable(true)
+            example6.setDots(true, "dots_box", "my_dot", "dot_active")
+            example6.setClickable(true)
+            example6.setDblclickable(true)
+            example6.showSlides()
+            example6.addCaption(captions)
+            example6.addPageNumber()
+            example6.showSlidesByDotAuto()
+            example6.showSlidesAutomatically()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 7 and 8 </h3>
+      <p class="example_description"> In the seventh and eighth example, I will add an animation for slideshow. I provide some animations is in the file "JSlide_animation.css",
+         since it is a lot easier for writing animations in CSS rather than javascript file. And you can extend the css to add your own animation. In this example,
+         I write a fade animation.
+      </p>
+
+      <div class="slide_frame" id="seventh_example">
+      </div>
+
+      <div class="slide_frame" id="eighth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex78_html_button">HTML</button>
+         <button class="code_button" id="ex78_css_button">CSS</button>
+         <button class="code_button" id="ex78_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex78_html">
+            <code>
+            // example 7
+            &lt;div class="slide_frame" id="seventh_example"&gt;
+            &lt;/div&gt;
+
+            // example 8
+            &lt;div class="slide_frame" id="eighth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex78_css" class="code_hidden">
+            <code>
+            // example 7
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .button_box {
+               margin-top: 10px;
+               margin-bottom: 10px;
+               margin-left: 52%;
+               margin-right: 50%;
+               display: flex;
+               justify-content: center;
+            }
+           
+            .my_button {
+               display: inline-block;
+               color: rgb(127, 197, 255);
+               background-color: lightcyan;
+           
+               width: fit-content;
+               white-space: nowrap;
+           
+               border: 2px solid cornflowerblue;
+               border-radius: 12px;
+               outline: none;
+           
+               padding: 20px 40px;
+               margin: 15px;
+           
+               text-align: center;
+               text-decoration: none;
+               font-size: 20px;
+           
+               cursor: pointer;
+           
+               transition: all .2s ease-in-out;
+           
+               font-weight: bold;
+               font-family: Comic Sans MS, Comic Sans, cursive;
+            }
+           
+            .my_button:hover {
+               color:rgb(60, 163, 248);
+               border: 2px solid lightblue;
+               background-color: rgb(240, 250, 250);
+               box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.12)
+            }
+
+            .fade {
+               animation-name: fade;
+               animation-duration: 1s;
+            }
+             
+            @keyframes fade {
+               from {opacity: 0}
+               to {opacity: 1}
+            }
+
+            // example 8
+            // all CSS styles are the same from example 7 except for no button styles
+            </code>
+         </pre>
+
+         <pre id="ex78_js" class="code_hidden">
+            <code>
+            // example 7
+            example7 = new JSlide()
+            example7.link()
+            example7.selectDisplayArea("#seventh_example", "slide_box", "slide", "flex")
+            example7.buildSlideBox()
+            example7.upload_pictures(image_path)
+            example7.load_pictures()
+            example7.addAnimation("fade")
+            example7.setClickable(true)
+            example7.setShowCaption(true, "caption_box", "caption")
+            example7.addCaption(captions)
+            example7.setButton(true, "button_box", "my_button")
+            example7.showSlides()
+            example7.showSlidesByClick()
+            example7.showSlidesByButtonClick()
+
+            // example 8
+            example8 = new JSlide()
+            example8.link()
+            example8.selectDisplayArea("#eighth_example", "slide_box", "slide", "flex")
+            example8.buildSlideBox()
+            example8.upload_pictures(image_path)
+            example8.load_pictures()
+            example8.setAuto(true)
+            example8.setSpeed(2)
+            example8.setShowPageNumber(true, "pagenumber")
+            example8.addPageNumber()
+            example8.setHoverable(true)
+            example8.setClickable(true)
+            example8.setDblclickable(true)
+            example8.setShowCaption(true, "caption_box", "caption")
+            example8.addAnimation("fade")
+            example8.showSlides()
+            example8.addCaption(captions)
+            example8.showSlidesAutomatically()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 9 and 10 </h3>
+      <p class="example_description"> In the ninth and tenth example, I will show moving slides in horizontal bi-direction. </p>
+
+      <div class="slide_frame" id="ninth_example">
+      </div>
+
+      <div class="slide_frame" id="tenth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex910_html_button">HTML</button>
+         <button class="code_button" id="ex910_css_button">CSS</button>
+         <button class="code_button" id="ex910_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex910_html">
+            <code>
+            // example 9
+            &lt;div class="slide_frame" id="ninth_example"&gt;
+            &lt;/div&gt;
+
+            // example 10
+            &lt;div class="slide_frame" id="tenth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex910_css" class="code_hidden">
+            <code>
+            // example 9
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .dots_box {
+               margin: 10px auto;
+               display: flex;
+               justify-content: center;
+            }
+           
+            .my_dot {
+               border-radius: 50%;
+               width: 20px;
+               height: 20px;
+         
+               display: inline-block;
+               background-color: lightgrey;
+               margin: 10px;
+         
+               border: none;
+               outline: none;
+         
+               transition: all .5s ease-Out;
+            }
+           
+            .my_dot:hover {
+               background-color: grey;
+            }
+           
+            .my_dot.dot_active {
+               background-color: grey;
+               background-image: url("activeDot/pacman3.jpeg");
+               background-size: 20px;
+            }
+
+            .button_box {
+               margin-top: 10px;
+               margin-bottom: 10px;
+               margin-left: 52%;
+               margin-right: 50%;
+               display: flex;
+               justify-content: center;
+            }
+           
+            .my_button {
+               display: inline-block;
+               color: rgb(127, 197, 255);
+               background-color: lightcyan;
+           
+               width: fit-content;
+               white-space: nowrap;
+           
+               border: 2px solid cornflowerblue;
+               border-radius: 12px;
+               outline: none;
+           
+               padding: 20px 40px;
+               margin: 15px;
+           
+               text-align: center;
+               text-decoration: none;
+               font-size: 20px;
+           
+               cursor: pointer;
+           
+               transition: all .2s ease-in-out;
+           
+               font-weight: bold;
+               font-family: Comic Sans MS, Comic Sans, cursive;
+            }
+           
+            .my_button:hover {
+               color:rgb(60, 163, 248);
+               border: 2px solid lightblue;
+               background-color: rgb(240, 250, 250);
+               box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.12)
+            }
+
+            .move_horizontal_reverse {
+               animation-name: move_horizontal_reverse;
+               animation-duration: 1s;
+               animation-delay: 1s;
+               position: relative !important;
+            }     
+           
+            @keyframes move_horizontal_reverse {
+               0% { left: 0;}
+               100%{ left: 100%;}
+            }            
+
+            // example 10
+            // all CSS styles are the same from example 9 except for no button styles
+            // and oppose animations
+            .move_horizontal {
+               animation-name: move_horizontal;
+               animation-duration: 1s;
+               animation-delay: 1s;
+               position: relative !important;
+            }     
+           
+            @keyframes move_horizontal {
+               0% { right: 0;}
+               100%{ right: 100%;}
+            }
+            </code>
+         </pre>
+
+         <pre id="ex910_js" class="code_hidden">
+            <code>
+            // example 9
+            example9 = new JSlide()
+            example9.link()
+            example9.selectDisplayArea("#ninth_example", "slide_box", "slide", "flex")
+            example9.buildSlideBox()
+            example9.upload_pictures(image_path)
+            example9.load_pictures()
+            example9.setAuto(true)
+            example9.setSpeed(2)
+            example9.setReverse(true)
+            example9.setShowPageNumber(true, "pagenumber")
+            example9.setHoverable(true)
+            example9.setClickable(true)
+            example9.setDblclickable(true)
+            example9.setShowCaption(true, "caption_box", "caption")
+            example9.setDots(true, "dots_box", "my_dot", "dot_active")
+            example9.setButton(true, "button_box", "my_button")
+            example9.addAnimation("move_horizontal")
+            example9.showSlides()
+            example9.addPageNumber()
+            example9.addCaption(captions)
+            example9.showSlidesAutomatically()
+            example9.showSlidesByDotAuto()
+            example9.showSlidesByButtonClickAuto()
+            
+            // example 10
+            example10 = new JSlide()
+            example10.link()
+            example10.selectDisplayArea("#tenth_example", "slide_box", "slide", "flex")
+            example10.buildSlideBox()
+            example10.upload_pictures(image_path)
+            example10.load_pictures()
+            example10.setShowCaption(true, "caption_box", "caption")
+            example10.setHoverable(true)
+            example10.setClickable(true)
+            example10.setDots(true, "dots_box", "my_dot", "dot_active")
+            example10.setShowPageNumber(true, "pagenumber")
+            example10.addAnimation("move_horizontal")
+            example10.showSlides()
+            example10.addPageNumber()
+            example10.addCaption(captions)
+            example10.showSlidesByClick()
+            example10.showSlidesByDotClick()
+            </code>
+         </pre>
+      </div>
+   </div>
+ 	
+   </body>
+
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 11 and 12 </h3>
+      <p class="example_description"> In the eleventh and twelfth example, I will show moving slides in vertical bi-direction. </p>
+
+      <div class="slide_frame" id="eleventh_example">
+      </div>
+
+      <div class="slide_frame" id="twelfth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex1112_html_button">HTML</button>
+         <button class="code_button" id="ex1112_css_button">CSS</button>
+         <button class="code_button" id="ex1112_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex1112_html">
+            <code>
+            // example 11
+            &lt;div class="slide_frame" id="eleventh_example"&gt;
+            &lt;/div&gt;
+
+            // example 12
+            &lt;div class="slide_frame" id="twelfth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex1112_css" class="code_hidden">
+            <code>
+            // example 11
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .move_vertical_reverse {
+               animation-name: move_vertical_reverse;
+               animation-duration: 1s;
+               animation-delay: 1s;
+               position: relative !important;
+            }     
+           
+             @keyframes move_vertical_reverse {
+               0% { top: 0;}
+               100%{ top: 100%;}
+             }
+
+            // example 12
+            // all CSS styles are the same from example 9 except for no button styles
+            // and oppose animations
+            .move_vertical {
+               animation-name: move_vertical;
+               animation-duration: 1s;
+               animation-delay: 1s;
+               position: relative !important;
+            }     
+           
+            @keyframes move_vertical {
+               0% { bottom: 0;}
+               100%{ bottom: 100%;}
+            }
+            </code>
+         </pre>
+
+         <pre id="ex1112_js" class="code_hidden">
+            <code>
+            // example 11
+            example11 = new JSlide()
+            example11.link()
+            example11.selectDisplayArea("#eleventh_example", "slide_box", "slide", "flex")
+            example11.buildSlideBox()
+            example11.upload_pictures(image_path)
+            example11.load_pictures()
+            example11.setAuto(true)
+            example11.setSpeed(2)
+            example11.setReverse(true)
+            example11.setHoverable(true)
+            example11.setClickable(true)
+            example11.setDblclickable(true)
+            example11.setShowPageNumber(true, "pagenumber")
+            example11.setShowCaption(true, "caption_box", "caption")
+            example11.addAnimation("move_vertical")
+            example11.showSlides()
+            example11.addCaption(captions)
+            example11.addPageNumber()
+            example11.showSlidesAutomatically()
+            
+            // example 12
+            example12 = new JSlide()
+            example12.link()
+            example12.selectDisplayArea("#twelfth_example", "slide_box", "slide", "flex")
+            example12.buildSlideBox()
+            example12.upload_pictures(image_path)
+            example12.load_pictures()
+            example12.setClickable(true)
+            example12.setShowPageNumber(true, "pagenumber")
+            example12.setShowCaption(true, "caption_box", "caption")
+            example12.setHoverable(true)
+            example12.addAnimation("move_vertical")
+            example12.showSlides()
+            example12.addPageNumber()
+            example12.addCaption(captions)
+            example12.showSlidesByClick()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 13 and 14 </h3>
+      <p class="example_description"> In the thirteenth and fourteenth example, I will show my self-defined animation. </p>
+
+      <div class="slide_frame" id="thirteenth_example">
+      </div>
+
+      <div class="slide_frame" id="fourteenth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex1314_html_button">HTML</button>
+         <button class="code_button" id="ex1314_css_button">CSS</button>
+         <button class="code_button" id="ex1314_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex1314_html">
+            <code>
+            // example 13
+            &lt;div class="slide_frame" id="thirteenth_example"&gt;
+            &lt;/div&gt;
+
+            // example 14
+            &lt;div class="slide_frame" id="fourteenth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex1314_css" class="code_hidden">
+            <code>
+            // example 13
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            /* my own animation */
+            .fancy_fade {
+               animation-name: fancy_fade;
+               animation-duration: 0.5s;
+               animation-iteration-count: 5;
+            }
+            
+            @keyframes fancy_fade {
+               from {opacity: 0}
+               to {opacity: 1}
+            }
+
+            // example 14
+            // all CSS styles are the same from example 13
+            </code>
+         </pre>
+
+         <pre id="ex1314_js" class="code_hidden">
+            <code>
+            // example 13
+            example13 = new JSlide()
+            example13.link()
+            example13.selectDisplayArea("#thirteenth_example", "slide_box", "slide", "flex")
+            example13.buildSlideBox()
+            example13.upload_pictures(image_path)
+            example13.load_pictures()
+            example13.setReverse(true)
+            example13.setAuto(true)
+            example13.setSpeed(4)
+            example13.setHoverable(true)
+            example13.setClickable(true)
+            example13.setDblclickable(true)
+            example13.setShowPageNumber(true, "pagenumber")
+            example13.setShowCaption(true, "caption_box", "caption")
+            example13.addAnimation("fancy_fade")
+            example13.showSlides()
+            example13.addCaption(captions)
+            example13.addPageNumber()
+            example13.showSlidesAutomatically()
+
+            // example 14
+            example14 = new JSlide()
+            example14.link()
+            example14.selectDisplayArea("#fourteenth_example", "slide_box", "slide", "flex")
+            example14.buildSlideBox()
+            example14.upload_pictures(image_path)
+            example14.load_pictures()
+            example14.setClickable(true)
+            example14.setShowPageNumber(true, "pagenumber")
+            example14.setShowCaption(true, "caption_box", "caption")
+            example14.setHoverable(true)
+            example14.addAnimation("fancy_fade")
+            example14.showSlides()
+            example14.addPageNumber()
+            example14.addCaption(captions)
+            example14.showSlidesByClick()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Example 15 and 16 </h3>
+      <p class="example_description"> In the fifteenth example, I will show one default filter (grayscale) and my self-defined filter. </p>
+
+      <div class="slide_frame" id="fifteenth_example">
+      </div>
+
+      <div class="slide_frame" id="sixteenth_example">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex1516_html_button">HTML</button>
+         <button class="code_button" id="ex1516_css_button">CSS</button>
+         <button class="code_button" id="ex1516_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex1516_html">
+            <code>
+            // example 15
+            &lt;div class="slide_frame" id="fifteenth_example"&gt;
+            &lt;/div&gt;
+
+            // example 16
+            &lt;div class="slide_frame" id="sixteenth_example"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex1516_css" class="code_hidden">
+            <code>
+            // example 15
+            .slide_frame {
+               margin: 50px;
+            }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+
+            .button_box {
+               margin-top: 10px;
+               margin-bottom: 10px;
+               margin-left: 52%;
+               margin-right: 50%;
+               display: flex;
+               justify-content: center;
+            }
+           
+            .my_button {
+               display: inline-block;
+               color: rgb(127, 197, 255);
+               background-color: lightcyan;
+           
+               width: fit-content;
+               white-space: nowrap;
+           
+               border: 2px solid cornflowerblue;
+               border-radius: 12px;
+               outline: none;
+           
+               padding: 20px 40px;
+               margin: 15px;
+           
+               text-align: center;
+               text-decoration: none;
+               font-size: 20px;
+           
+               cursor: pointer;
+           
+               transition: all .2s ease-in-out;
+           
+               font-weight: bold;
+               font-family: Comic Sans MS, Comic Sans, cursive;
+            }
+           
+            .my_button:hover {
+               color:rgb(60, 163, 248);
+               border: 2px solid lightblue;
+               background-color: rgb(240, 250, 250);
+               box-shadow: 0px 12px 12px 0px rgba(0, 0, 0, 0.12)
+            }
+
+            .grayscale {
+               filter: grayscale(50%);
+            }
+
+            // example 16
+            // all CSS styles are the same from example 15 except for no buttons
+            // and the different filter
+            /* my own filter */
+            .my_sepia {
+               filter: sepia(50%);
+            }
+            </code>
+         </pre>
+
+         <pre id="ex1516_js" class="code_hidden">
+            <code>
+            // example 15
+            example15 = new JSlide()
+            example15.link()
+            example15.selectDisplayArea("#fifteenth_example", "slide_box", "slide", "flex")
+            example15.buildSlideBox()
+            example15.upload_pictures(image_path)
+            example15.load_pictures()
+            example15.setClickable(true)
+            example15.setShowCaption(true, "caption_box", "caption")
+            example15.setButton(true, "button_box", "my_button")
+            example15.setShowPageNumber(true, "pagenumber")
+            example15.addFilter("grayscale")
+            example15.showSlides()
+            example15.showSlidesByClick()
+            example15.addCaption(captions)
+            example15.addPageNumber()
+            example15.showSlidesByButtonClick()
+
+            // example 16
+            example16 = new JSlide()
+            example16.link()
+            example16.selectDisplayArea("#sixteenth_example", "slide_box", "slide", "flex")
+            example16.buildSlideBox()
+            example16.upload_pictures(image_path)
+            example16.load_pictures()
+            example16.setAuto(true)
+            example16.setSpeed(2)
+            example16.setHoverable(true)
+            example16.setClickable(true)
+            example16.setDblclickable(true)
+            example16.setShowCaption(true, "caption_box", "caption")
+            example16.setShowPageNumber(true, "pagenumber")
+            example16.addFilter("my_sepia")
+            example16.showSlides()
+            example16.addCaption(captions)
+            example16.addPageNumber()
+            example16.showSlidesAutomatically()
+            </code>
+         </pre>
+      </div>
+   </div>
+
+   <div class="example_box">
+      <h3 class="example_title"> Show easySetup </h3>
+      <p class="example_description"> In the last example, I will show how to use the function "easySetup"
+         (so you only need to care about arguments, but no order of function executions) to produce example 1.
+      </p>
+
+      <div class="slide_frame" id="easySetup">
+      </div>
+
+      <div class="show_code_bar">
+         <button class="code_button" id="ex_easySetup_html_button">HTML</button>
+         <button class="code_button" id="ex_easySetup_css_button">CSS</button>
+         <button class="code_button" id="ex_easySetup_js_button">JS</button>
+      </div>
+
+      <div class="code_box">
+         <pre id="ex_easySetup_html">
+            <code>
+            &lt;div class="slide_frame" id="easySetup"&gt;
+            &lt;/div&gt;
+            </code>
+         </pre>
+
+         <pre id="ex_easySetup_css" class="code_hidden">
+            <code>
+            .slide_frame {
+                  margin: 50px;
+              }
+              
+            .slide_box {
+               margin: auto;
+               width: 800px;
+               height: 600px;
+               overflow: hidden;
+               background-size: 800px 600px;
+               background-color: rgb(210, 229, 247);
+            }
+            
+            .slide {
+               background-color: aliceblue;
+               height: 600px;
+               width: 800px;
+            }
+            
+            .pagenumber {
+               display: block;
+               position: absolute;
+               color: black;
+               font-size: 15px;
+               font-weight: bold;
+               padding: 12px;
+               margin: 0px;
+               z-index: 10;
+            }
+            
+            .caption_box {
+               display: flex;
+               flex: auto;
+               margin: 10px 50%;
+               text-align: center;
+            }
+            
+            .caption {
+               color: black;
+               font-size: 20px;
+               font-weight: bold;
+               font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+            }
+            </code>
+         </pre>
+
+         <pre id="ex_easySetup_js" class="code_hidden">
+            <code>
+            test = new JSlide()
+            args = test.defaultArgs("#easySetup", "slide_box", "slide", "flex")
+            args.image_path = image_path
+            args.clickable = true
+            args.showCaption = true
+            args.showPageNumber = true
+            args.pageNumberClass = "pagenumber"
+            args.captions = captions
+            args.captionBoxClass = "caption_box"
+            args.captionClass = "caption"
+            
+            test.easySetup(args)
+            </code>
+         </pre>
+      </div>
+   </div>
+ 	
+   </body>
+
+</html>

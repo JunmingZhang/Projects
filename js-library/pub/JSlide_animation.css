@@ -1,0 +1,63 @@
+/* a file for annimation */
+/* https://www.w3schools.com/css/css3_animations.asp (CSS Animations) */
+
+/* Fading animation */
+.fade {
+    animation-name: fade;
+    animation-duration: 1s;
+}
+  
+@keyframes fade {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+/* Slides move horizontally */
+.move_horizontal {
+    animation-name: move_horizontal;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    position: relative !important;
+}     
+
+@keyframes move_horizontal {
+    0% { right: 0;}
+    100%{ right: 100%;}
+}
+
+.move_horizontal_reverse {
+    animation-name: move_horizontal_reverse;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    position: relative !important;
+}     
+
+@keyframes move_horizontal_reverse {
+    0% { left: 0;}
+    100%{ left: 100%;}
+}
+
+/* Slides move vertically */
+.move_vertical {
+    animation-name: move_vertical;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    position: relative !important;
+}     
+
+@keyframes move_vertical {
+    0% { bottom: 0;}
+    100%{ bottom: 100%;}
+}
+
+.move_vertical_reverse {
+    animation-name: move_vertical_reverse;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    position: relative !important;
+}     
+
+@keyframes move_vertical_reverse {
+    0% { top: 0;}
+    100%{ top: 100%;}
+}

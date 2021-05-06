@@ -1,0 +1,38 @@
+/* filter from https://www.w3schools.com/cssref/css3_pr_filter.asp */
+
+.blur {
+    filter: blur(2px);
+}
+
+.brightness {
+    filter: brightness(200%);
+}
+
+.contrast {
+    filter: contrast(200%);
+}
+
+.grayscale {
+    filter: grayscale(50%);
+}
+
+.hue_rotation {
+    filter: hue-rotate(90deg);
+}
+
+.sepia {
+    filter: sepia(100%);
+}
+
+.invert {
+    filter: invert(100%);
+}
+
+.transparent {
+    filter: opacity(30%);
+}
+
+.saturate {
+    filter: saturate(800%);
+}
+  
