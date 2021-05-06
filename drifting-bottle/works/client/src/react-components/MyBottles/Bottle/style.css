@@ -1,0 +1,47 @@
+/* .bottle {
+	background-color: white;
+	
+	overflow:auto;
+	width: 600px;
+	border-bottom: 1px solid grey;
+
+} */
+
+
+.bottleIconContainer {
+
+	padding: 20px;
+	float: left;
+
+
+}
+
+.bottleIcon {
+
+	width: 60px;
+	height: 60px;
+	text-align: center;
+	border-radius: 50%;
+	overflow: auto;
+
+
+
+}
+
+.bottleContent {
+
+	margin-left: 10px;
+	width: 520px;
+	
+
+}
+
+
+.grey {
+	color: grey;
+}
+
+
+.hashtag {
+	color: #5088e9;
+}

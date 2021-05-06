@@ -1,0 +1,22 @@
+/* Styles for the Header React component */
+.summary {
+  margin: 20px;
+  padding: 30px;
+
+}
+
+.profilepic {
+	border-radius: 30%;
+ 
+	width: 150px;
+	height: 150px; 
+}
+
+h4 {
+  color:#3c4cad;
+}
+
+
+
+
+  

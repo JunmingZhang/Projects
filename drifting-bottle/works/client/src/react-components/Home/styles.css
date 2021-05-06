@@ -1,0 +1,45 @@
+/* Styles for the Home React component */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.home__bg-image {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  background-image: url("./static/漂流瓶Home.gif");
+}
+
+.home__button-link {
+  text-decoration: none;
+  position: absolute;
+
+}
+
+.home__button {
+  width: auto;
+  height: auto;
+
+}
+
+/* Increase specificity to override component styles */
+.MuiButton-root.home__button:hover {
+
+  color: lightblue;
+  background-color: transparent;
+  /*background-color: transparent;
+  border: 4px darkslategrey solid;
+  border-radius: 0;*/
+}
+
+.home__button .MuiButton-label {
+  
+  color: cadetblue;
+  /*color: lightblue;*/
+  font-size: 4em;
+  font-variant-caps: titling-caps;
+
+}

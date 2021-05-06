@@ -1,0 +1,27 @@
+.register {
+  position: fixed;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.explain {
+  position: absolute;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 100px;
+  font-size: 1em;
+  color: cadetblue;
+}
+
+.h1 {
+  color: lightblue;
+}
+
+.user-form {
+  justify-content: center;
+}
+
+.user-form .MuiGrid-root {
+  text-align: center;
+}

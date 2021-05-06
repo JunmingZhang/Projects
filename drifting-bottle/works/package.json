@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parse": "^0.1.0",
+    "body-parser": "^1.19.0",
+    "connect-mongo": "^4.4.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "mongo": "^0.1.0",
+    "mongoose": "^5.12.2",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7",
+    "validator": "^13.5.2"
+  }
+}

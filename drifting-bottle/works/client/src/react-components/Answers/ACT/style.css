@@ -1,0 +1,28 @@
+
+
+
+.act-question {
+    text-align: center;
+    margin-left: 36%;
+    margin-top: 5%;
+    width: 500px;
+}
+
+.act-answer {
+    justify-content: center;
+    width: 500px;
+}
+
+.actbuttons {
+    width: 60%; 
+   
+}
+.MuiButton-contained.actbutton {
+    background-color:#e8b7d4;
+    text-transform: none;
+    margin: 30px;
+    padding: 15px;
+    display: float;
+    float: right;
+}
+

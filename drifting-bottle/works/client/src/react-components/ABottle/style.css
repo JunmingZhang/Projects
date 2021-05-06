@@ -1,0 +1,58 @@
+.page {
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+  }
+  .userInformation {
+    margin-left: 20px;
+    /* display: inline-block; */
+    float: left;
+  }
+  
+  #profilepic {
+      border-radius: 50%;
+      float: left;
+      margin: 10px;
+      width: 200px;
+      height: 200px;
+      margin-left: 100px;
+  }
+  
+  #username{
+    display: block;
+    margin-left: 100px;
+  }
+  
+  #email{
+    display: block;
+    padding: 5px;
+    margin-left: 100px;
+  
+  }
+  #date{
+    display: block;
+    margin-left: 100px;
+  
+  }
+
+.content{
+    background-color: Azure;
+    margin-left: 500px;
+    width: 600px;
+    /* padding: 20px; */
+    /* float: right; */
+    
+}
+
+.black{
+    color: black;
+    border-bottom: 1px solid grey;
+    padding: 20px;
+    background-color: skyblue;
+}
+
+.contentText{
+    padding: 20px;
+    border-bottom: 1px solid grey;
+}

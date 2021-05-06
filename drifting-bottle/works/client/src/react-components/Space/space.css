@@ -1,0 +1,43 @@
+h1 {
+    color: deeppink;
+    text-align: center;
+}
+
+#top {
+    margin-top: 10%;
+}
+
+.space {
+    position: fixed;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+
+#button_list {
+    padding-top: 10px;
+    margin-left: 42%;
+    display:flex;
+    align-items:center;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    /* display: inline; */
+    margin-top: 25px;
+}
+
+.MuiButton-contained.myButton {
+    color: aliceblue;
+    background-color: deeppink;
+    text-transform: none;
+}
+
+.MuiButton-contained.myButton:hover {
+    color: aliceblue;
+    background-color: pink;
+}

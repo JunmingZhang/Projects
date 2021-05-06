@@ -1,0 +1,19 @@
+/* Styles for the Header React component */
+#title {
+    margin-top: 80px;
+    margin-bottom: 50px;
+    text-align: left;
+    color: steelblue;
+    text-decoration-color: steelblue;
+
+}
+
+h1 {
+    
+    color: cadetblue;
+}
+
+h2 {
+    
+    color: lightblue;
+}

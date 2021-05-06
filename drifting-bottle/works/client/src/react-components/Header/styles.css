@@ -1,0 +1,32 @@
+/* Styles for the Header React component */
+.header {
+  height: 60px;
+}
+
+.header-bar {
+  max-width: 100%;
+  position: fixed;
+  right: 0px;
+  top: 20px;
+  height: 100%;
+  display: flex;
+  margin-right: 50px;
+  justify-content: flex-end;
+}
+
+.header-item {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: cadetblue;
+  /*transition: 100ms;*/
+}
+
+.header-item:hover {
+  color: Azure;
+}
+
+a {
+  text-decoration: none;
+}

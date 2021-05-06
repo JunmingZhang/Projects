@@ -1,0 +1,28 @@
+.theme_sheet {
+    position: fixed;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+
+#theme_grid {
+   margin-top: 7%;
+   padding-left: 50px;
+}
+
+.MuiButton-contained.myButton {
+    color: aliceblue;
+    background-color: deeppink;
+}
+
+.MuiButton-contained.myButton:hover {
+    color: aliceblue;
+    background-color: pink;
+}
+
+#linkpos {
+    position: relative;
+    left: 42%;
+    bottom: 10%;
+}

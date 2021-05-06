@@ -1,0 +1,40 @@
+.intro {
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+
+    width: 500px;
+}
+
+.page {
+    position: fixed;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}
+
+.tenq-question {
+    text-align: center;
+    margin: 20px;
+}
+
+.tenq-answer {
+    justify-content: center;
+    width: 500px;
+}
+
+.tenqbuttons {
+    width: 60%; 
+   
+}
+.MuiButton-contained.tenqbutton {
+    background-color:#e8b7d4;
+    text-transform: none;
+    margin: 30px;
+    padding: 15px;
+    display: float;
+    float: right;
+}
+
