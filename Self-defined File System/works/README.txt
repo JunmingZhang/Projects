@@ -1,0 +1,4 @@
+We did not implement a way to rearrange extents. So after a long term of use, our file system suffers from fragmentization as deleting and creating file makes
+the file system harder and harder to mannage and the efficiency will be lower. Each newly created extents will be short in size so that it cannot effectively store
+large consecutive blocks, which makes read and write slower. Also since there are finite number of extents associate to a file, we will potentially waste some spaces
+with lack of extents for each file if the file are running out of extents and we currently have no optimal way to avoid this. 
